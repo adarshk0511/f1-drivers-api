@@ -8,4 +8,11 @@ const {
 
 router.get("/", getDrivers);
 
+
+const {
+    createDriver
+} = require("../controllers/driverController");
+
+router.post("/", createDriver);
+
 module.exports = router;

@@ -1,22 +1,41 @@
-const drivers = [
-    {
-        driverNumber: 1,
-        name: "Max Verstappen",
-        team: "Red Bull"
-    },
-    {
-        driverNumber: 16,
-        name: "Charles Leclerc",
-        team: "Ferrari"
+const Driver = require("../models/Driver");
+
+const createDriver = async (req, res) => {
+
+    try {
+
+        const driver = await Driver.create(req.body);
+
+        res.status(201).json(driver);
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message
+        });
+
     }
-];
 
-const getDrivers = (req, res) => {
+};
 
-    res.json(drivers);
+const getDrivers = async (req, res) => {
+
+    try {
+
+        const drivers = await Driver.find();
+
+        res.json(drivers);
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message
+        });
+
+    }
 
 };
 
 module.exports = {
-    getDrivers
+    createDriver, getDrivers
 };
