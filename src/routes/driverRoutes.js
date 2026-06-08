@@ -10,6 +10,10 @@ const {
     validateDriver
 } = require("../middleware/validateDriver");
 
+const {
+    apiKey
+} = require("../middleware/apiKey");
+
 router.get("/", apiKey, getDrivers);
 
 
