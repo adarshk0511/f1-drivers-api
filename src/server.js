@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(logger);
 
 app.use("/api/drivers", driverRoutes);
-
+app.use("/api/teams", driverRoutes);
 const PORT = process.env.PORT || 5000;
 
 connectDB();
