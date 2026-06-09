@@ -1,4 +1,5 @@
 const Driver = require("../models/Driver");
+const driverService = require("../services/driverService");
 
 const createDriver = async (req, res) => {
   try {
@@ -10,22 +11,18 @@ const createDriver = async (req, res) => {
   }
 };
 
-const getDrivers = async (req, res) => {
-  try {
-    const { team } = req.query;
+const getDrivers = async(req,res,next)=>{
 
-    let filter = {};
+    try{
 
-    if (team) {
-      filter.team = team;
+        const drivers =
+            await driverService.getAllDrivers();
+
+        res.json(drivers);
+
+    }catch(err){
+        next(err);
     }
-
-    const drivers = await Driver.find(filter);
-
-    res.json(drivers);
-  } catch (error) {
-    next(error);
-  }
 };
 
 const getDriverByAbbreviation = async (req, res) => {
