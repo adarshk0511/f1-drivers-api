@@ -11,50 +11,65 @@ const createDriver = async (req, res) => {
   }
 };
 
-const getDrivers = async(req,res,next)=>{
+const getDrivers = async (req, res, next) => {
+  try {
+    const team = req.query.team;
+    const filter = {};
 
-    try{
-
-        const drivers =
-            await driverService.getAllDrivers();
-
-        res.json(drivers);
-
-    }catch(err){
-        next(err);
+    if (team) {
+      filter.team = team;
     }
+
+    const drivers = await Driver.find(filter);
+
+    res.json(drivers);
+  } catch (err) {
+    next(err);
+  }
 };
 
-const getDriverByAbbreviation = async (req, res) => {
-    try{
-          const driver = await Driver.findOne({
-    abbreviation: req.params.abbr,
-  });
+const getDriverByAbbreviation = async (
+    req,
+    res,
+    next
+) => {
 
-  if (!driver) {
-    return res.status(404).json({
-      message: "Driver not found",
-    });
-  }
+    try {
 
-  res.json(driver);
-    }
-    catch(error){
+        const driver =
+            await driverService.getDriverByAbbreviation(
+                req.params.abbr
+            );
+
+        if (!driver) {
+
+            return res.status(404).json({
+                success: false,
+                message: "Driver not found"
+            });
+
+        }
+
+        res.json(driver);
+
+    } catch (error) {
+
         next(error);
+
     }
+
 };
 
 const getDriversByTeam = async (req, res) => {
-  try{
+  try {
     const drivers = await Driver.find({
-    team: req.params.team,
-  });
+      team: req.params.team,
+    });
 
-  res.json(drivers);
-  }
-  catch(error){
+    res.json(drivers);
+  } catch (error) {
     next(error);
-  } 
+  }
 };
 
 module.exports = {

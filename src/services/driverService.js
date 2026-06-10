@@ -4,6 +4,15 @@ const getAllDrivers = async () => {
     return await Driver.find();
 };
 
+const getDriverByAbbreviation = async (abbr) => {
+
+    return await Driver.findOne({
+        abbreviation: abbr
+    });
+
+};
+
 module.exports = {
-    getAllDrivers
+    getAllDrivers,
+    getDriverByAbbreviation
 };
