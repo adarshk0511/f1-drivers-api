@@ -1,7 +1,13 @@
 const Driver = require("../models/Driver");
 
-const getAllDrivers = async () => {
-    return await Driver.find();
+const getAllDrivers = async (team) => {
+     const filter = {};
+
+    if (team) {
+        filter.team = team;
+    }
+
+    return await Driver.find(filter);
 };
 
 const getDriverByAbbreviation = async (abbr) => {

@@ -12,20 +12,22 @@ const createDriver = async (req, res) => {
 };
 
 const getDrivers = async (req, res, next) => {
-  try {
-    const team = req.query.team;
-    const filter = {};
 
-    if (team) {
-      filter.team = team;
+    try {
+
+        const team = req.query.team;
+
+        const drivers =
+            await driverService.getAllDrivers(team);
+
+        res.json(drivers);
+
+    } catch (error) {
+
+        next(error);
+
     }
 
-    const drivers = await Driver.find(filter);
-
-    res.json(drivers);
-  } catch (err) {
-    next(err);
-  }
 };
 
 const getDriverByAbbreviation = async (
