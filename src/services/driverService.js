@@ -6,17 +6,29 @@ const getAllDrivers = async (
     limit = 5
 ) => {
 
-    const filter = {};
+    
 
+    const filter = {};
+    const totalDrivers =
+    await Driver.countDocuments(filter);
+    
     if (team) {
         filter.team = team;
     }
 
     const skip = (page - 1) * limit;
 
-    return await Driver.find(filter)
+    const drivers =  await Driver.find(filter)
         .skip(skip)
         .limit(limit);
+
+    return {
+        totalDrivers,
+        totalPages:
+            Math.ceil(totalDrivers / limit),
+        currentPage: page,
+        drivers
+    };
 
 };
 
