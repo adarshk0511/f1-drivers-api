@@ -1,13 +1,23 @@
 const Driver = require("../models/Driver");
 
-const getAllDrivers = async (team) => {
-     const filter = {};
+const getAllDrivers = async (
+    team,
+    page = 1,
+    limit = 5
+) => {
+
+    const filter = {};
 
     if (team) {
         filter.team = team;
     }
 
-    return await Driver.find(filter);
+    const skip = (page - 1) * limit;
+
+    return await Driver.find(filter)
+        .skip(skip)
+        .limit(limit);
+
 };
 
 const getDriverByAbbreviation = async (abbr) => {

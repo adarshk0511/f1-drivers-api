@@ -11,14 +11,28 @@ const createDriver = async (req, res) => {
   }
 };
 
-const getDrivers = async (req, res, next) => {
+const getDrivers = async (
+    req,
+    res,
+    next
+) => {
 
     try {
 
         const team = req.query.team;
 
+        const page =
+            Number(req.query.page) || 1;
+
+        const limit =
+            Number(req.query.limit) || 5;
+
         const drivers =
-            await driverService.getAllDrivers(team);
+            await driverService.getAllDrivers(
+                team,
+                page,
+                limit
+            );
 
         res.json(drivers);
 
