@@ -11,76 +11,50 @@ const createDriver = async (req, res) => {
   }
 };
 
-const getDrivers = async (
-    req,
-    res,
-    next
-) => {
+const getDrivers = async (req, res, next) => {
+  try {
+    const team = req.query.team;
 
-    try {
+    const page = Number(req.query.page) || 1;
 
-        const team = req.query.team;
+    const limit = Number(req.query.limit) || 5;
 
-        const page =
-            Number(req.query.page) || 1;
+    const sortField = req.query.sort || "driverNumber";
 
-        const limit =
-            Number(req.query.limit) || 5;
+    const sortOrder = req.query.order || "asc";
 
-        const sortField =
-            req.query.sort || "driverNumber";
+    const result = await driverService.getAllDrivers(
+      team,
+      page,
+      limit,
+      sortField,
+      sortOrder,
+    );
 
-        const result =
-            await driverService.getAllDrivers(
-                team,
-                page,
-                limit,
-                sortField
-            );
-
-        res.json(result);
-
-    } catch (error) {
-
-        next(error);
-
-    }
-
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getDriverByAbbreviation = async (
-    req,
-    res,
-    next
-) => {
+const getDriverByAbbreviation = async (req, res, next) => {
+  try {
+    const driver = await driverService.getDriverByAbbreviation(req.params.abbr);
 
-    try {
-
-        const driver =
-            await driverService.getDriverByAbbreviation(
-                req.params.abbr
-            );
-
-        if (!driver) {
-
-            return res.status(404).json({
-                success: false,
-                message: "Driver not found"
-            });
-
-        }
-
-        res.json(driver);
-
-    } catch (error) {
-
-        next(error);
-
+    if (!driver) {
+      return res.status(404).json({
+        success: false,
+        message: "Driver not found",
+      });
     }
 
+    res.json(driver);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getDriversByTeam = async (req, res) => {
+const getDriversByTeam = async (req, res, next) => {
   try {
     const drivers = await Driver.find({
       team: req.params.team,

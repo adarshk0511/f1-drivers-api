@@ -1,10 +1,12 @@
 const Driver = require("../models/Driver");
 
+
 const getAllDrivers = async (
     team,
     page = 1,
     limit = 5,
-    sortField = "driverNumber"
+    sortField = "driverNumber",
+    sortOrder = "asc"
 ) => {
 
     const filter = {};
@@ -18,9 +20,14 @@ const getAllDrivers = async (
     const totalDrivers =
         await Driver.countDocuments(filter);
 
+    const sortValue =
+        sortOrder === "desc" ? -1 : 1;
+
     const drivers =
         await Driver.find(filter)
-            .sort({ [sortField]: 1 })
+            .sort({
+                [sortField]: sortValue
+            })
             .skip(skip)
             .limit(limit);
 
