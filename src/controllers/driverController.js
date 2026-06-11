@@ -1,9 +1,9 @@
 const Driver = require("../models/Driver");
 const driverService = require("../services/driverService");
 
-const createDriver = async (req, res) => {
+const createDriver = async (req, res, next) => {
   try {
-    const driver = await Driver.create(req.body);
+    const driver = await driverService.createDriver(req.body);
 
     res.status(201).json(driver);
   } catch (error) {
@@ -91,6 +91,8 @@ const searchDrivers = async (
     }
 
 };
+
+
 
 module.exports = {
   createDriver,

@@ -14,7 +14,7 @@ const validateDriver = require("../middleware/validateDriver");
 const apiKey = require("../middleware/apiKey");
 
 router.get("/", apiKey, getDrivers);
-
+router.post("/", createDriver);
 router.get("/search/:keyword", searchDrivers);
 
 router.post("/", validateDriver, createDriver);

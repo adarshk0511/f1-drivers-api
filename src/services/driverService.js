@@ -70,8 +70,16 @@ const searchDrivers = async (keyword) => {
 
 };
 
+const createDriver = async (driverData) => {
+
+    const driver = await Driver.create(driverData);
+
+    return driver;
+};
+
 module.exports = {
     getAllDrivers,
     getDriverByAbbreviation,
-    searchDrivers 
+    searchDrivers,
+    createDriver
 };
