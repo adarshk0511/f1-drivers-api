@@ -66,9 +66,36 @@ const getDriversByTeam = async (req, res, next) => {
   }
 };
 
+const searchDrivers = async (
+    req,
+    res,
+    next
+) => {
+
+    try {
+
+        const keyword =
+            req.params.keyword;
+
+        const drivers =
+            await driverService.searchDrivers(
+                keyword
+            );
+
+        res.json(drivers);
+
+    } catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
   createDriver,
   getDrivers,
   getDriverByAbbreviation,
   getDriversByTeam,
+  searchDrivers
 };

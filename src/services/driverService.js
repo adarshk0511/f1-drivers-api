@@ -49,7 +49,29 @@ const getDriverByAbbreviation = async (abbr) => {
 
 };
 
+const searchDrivers = async (keyword) => {
+
+    return await Driver.find({
+        $or: [
+            {
+                fullName: {
+                    $regex: keyword,
+                    $options: "i"
+                }
+            },
+            {
+                abbreviation: {
+                    $regex: keyword,
+                    $options: "i"
+                }
+            }
+        ]
+    });
+
+};
+
 module.exports = {
     getAllDrivers,
-    getDriverByAbbreviation
+    getDriverByAbbreviation,
+    searchDrivers 
 };
