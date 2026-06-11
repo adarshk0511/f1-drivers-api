@@ -27,14 +27,18 @@ const getDrivers = async (
         const limit =
             Number(req.query.limit) || 5;
 
-        const drivers =
+        const sortField =
+            req.query.sort || "driverNumber";
+
+        const result =
             await driverService.getAllDrivers(
                 team,
                 page,
-                limit
+                limit,
+                sortField
             );
 
-        res.json(drivers);
+        res.json(result);
 
     } catch (error) {
 
