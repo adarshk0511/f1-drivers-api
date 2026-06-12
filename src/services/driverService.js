@@ -94,10 +94,21 @@ const updateDriver = async (
 
 };
 
+const deleteDriver = async (
+    abbreviation
+) => {
+
+    return await Driver.findOneAndDelete({
+        abbreviation
+    });
+
+};
+
 module.exports = {
     getAllDrivers,
     getDriverByAbbreviation,
     searchDrivers,
     createDriver,
-    updateDriver
+    updateDriver,
+    deleteDriver
 };

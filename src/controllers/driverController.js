@@ -124,11 +124,48 @@ const updateDriver = async (
 
 };
 
+const deleteDriver = async (
+    req,
+    res,
+    next
+) => {
+
+    try {
+
+        const deletedDriver =
+            await driverService.deleteDriver(
+                req.params.abbr
+            );
+
+        if (!deletedDriver) {
+
+            return res.status(404).json({
+                message: "Driver not found"
+            });
+
+        }
+
+        res.json({
+            success: true,
+            message: "Driver deleted"
+        });
+
+    } catch (error) {
+
+        next(error);
+
+    }
+
+};
+
+
+
 module.exports = {
   createDriver,
   getDrivers,
   getDriverByAbbreviation,
   updateDriver,
   getDriversByTeam,
-  searchDrivers
+  searchDrivers,
+  deleteDriver
 };

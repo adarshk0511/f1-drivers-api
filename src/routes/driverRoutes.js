@@ -8,7 +8,8 @@ const {
   getDriverByAbbreviation,
   searchDrivers,
   getDriversByTeam,
-  updateDriver
+  updateDriver,
+  deleteDriver
 } = require("../controllers/driverController");
 
 const validateDriver = require("../middleware/validateDriver");
@@ -22,6 +23,7 @@ router.post("/", validateDriver, createDriver);
 
 router.get("/:abbr", getDriverByAbbreviation);
 router.put("/:abbr",  updateDriver);
+router.delete("/:abbr", deleteDriver);
 router.get("/:team", getDriversByTeam);
 
 
