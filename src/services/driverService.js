@@ -77,9 +77,27 @@ const createDriver = async (driverData) => {
     return driver;
 };
 
+const updateDriver = async (
+    abbreviation,
+    updatedData
+) => {
+
+    return await Driver.findOneAndUpdate(
+        {
+            abbreviation
+        },
+        updatedData,
+        {
+            new: true
+        }
+    );
+
+};
+
 module.exports = {
     getAllDrivers,
     getDriverByAbbreviation,
     searchDrivers,
-    createDriver
+    createDriver,
+    updateDriver
 };

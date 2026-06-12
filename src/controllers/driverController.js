@@ -92,12 +92,43 @@ const searchDrivers = async (
 
 };
 
+const updateDriver = async (
+    req,
+    res,
+    next
+) => {
 
+    try {
+
+        const updatedDriver =
+            await driverService.updateDriver(
+                req.params.abbr,
+                req.body
+            );
+
+        if (!updatedDriver) {
+
+            return res.status(404).json({
+                message: "Driver not found"
+            });
+
+        }
+
+        res.json(updatedDriver);
+
+    } catch (error) {
+
+        next(error);
+
+    }
+
+};
 
 module.exports = {
   createDriver,
   getDrivers,
   getDriverByAbbreviation,
+  updateDriver,
   getDriversByTeam,
   searchDrivers
 };
