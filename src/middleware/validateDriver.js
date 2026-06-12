@@ -1,4 +1,9 @@
-const validateDriver = (req, res, next) => {
+const validateDriver = (
+    req,
+    res,
+    next
+) => {
+
     const {
         driverNumber,
         fullName,
@@ -12,10 +17,13 @@ const validateDriver = (req, res, next) => {
         !abbreviation ||
         !team
     ) {
+
         return res.status(400).json({
             success: false,
-            message: "Required fields missing"
+            message:
+                "driverNumber, fullName, abbreviation and team are required"
         });
+
     }
 
     next();

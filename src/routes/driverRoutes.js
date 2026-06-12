@@ -9,21 +9,22 @@ const {
   searchDrivers,
   getDriversByTeam,
   updateDriver,
-  deleteDriver
+  deleteDriver,
+  getDrivers1
 } = require("../controllers/driverController");
 
 const validateDriver = require("../middleware/validateDriver");
 const apiKey = require("../middleware/apiKey");
 
-router.get("/", apiKey, getDrivers);
-router.post("/", createDriver);
-router.get("/search/:keyword", searchDrivers);
-
+router.get("/", apiKey, getDrivers1);
 router.post("/", validateDriver, createDriver);
+
+router.get("/search/:keyword", searchDrivers);
 
 router.get("/:abbr", getDriverByAbbreviation);
 router.put("/:abbr",  updateDriver);
 router.delete("/:abbr", deleteDriver);
+
 router.get("/:team", getDriversByTeam);
 
 

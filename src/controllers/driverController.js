@@ -158,7 +158,46 @@ const deleteDriver = async (
 
 };
 
+const getDrivers1 = async (
+    req,
+    res,
+    next
+) => {
 
+    try {
+
+        const {
+            team,
+            search,
+            sort,
+            order
+        } = req.query;
+
+        const page =
+            Number(req.query.page) || 1;
+
+        const limit =
+            Number(req.query.limit) || 5;
+
+        const result =
+            await driverService.getAllDrivers(
+                team,
+                search,
+                page,
+                limit,
+                sort,
+                order
+            );
+
+        res.json(result);
+
+    } catch (error) {
+
+        next(error);
+
+    }
+
+};
 
 module.exports = {
   createDriver,
@@ -167,5 +206,6 @@ module.exports = {
   updateDriver,
   getDriversByTeam,
   searchDrivers,
-  deleteDriver
+  deleteDriver,
+  getDrivers1
 };

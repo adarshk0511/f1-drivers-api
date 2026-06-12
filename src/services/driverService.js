@@ -104,11 +104,79 @@ const deleteDriver = async (
 
 };
 
+const getAllDrivers1 = async (
+    team,
+    search,
+    page = 1,
+    limit = 5,
+    sortField = "driverNumber",
+    sortOrder = "asc"
+) => {
+
+    const filter = {};
+
+    if (team) {
+        filter.team = team;
+    }
+
+    if (search) {
+
+        filter.$or = [
+            {
+                fullName: {
+                    $regex: search,
+                    $options: "i"
+                }
+            },
+            {
+                abbreviation: {
+                    $regex: search,
+                    $options: "i"
+                }
+            }
+        ];
+
+    }
+
+    const skip =
+        (page - 1) * limit;
+
+    const sortValue =
+        sortOrder === "desc"
+            ? -1
+            : 1;
+
+    const totalDrivers =
+        await Driver.countDocuments(
+            filter
+        );
+
+    const drivers =
+        await Driver.find(filter)
+            .sort({
+                [sortField]: sortValue
+            })
+            .skip(skip)
+            .limit(limit);
+
+    return {
+        totalDrivers,
+        totalPages:
+            Math.ceil(
+                totalDrivers / limit
+            ),
+        currentPage: page,
+        drivers
+    };
+
+};
+
 module.exports = {
     getAllDrivers,
     getDriverByAbbreviation,
     searchDrivers,
     createDriver,
     updateDriver,
-    deleteDriver
+    deleteDriver,
+    getAllDrivers1
 };
