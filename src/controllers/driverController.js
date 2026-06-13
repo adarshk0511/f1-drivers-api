@@ -180,7 +180,7 @@ const getDrivers1 = async (
             Number(req.query.limit) || 5;
 
         const result =
-            await driverService.getAllDrivers(
+            await driverService.getAllDrivers1(
                 team,
                 search,
                 page,

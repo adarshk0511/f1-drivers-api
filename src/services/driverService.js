@@ -29,7 +29,8 @@ const getAllDrivers = async (
                 [sortField]: sortValue
             })
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .lean();
 
     return {
         totalDrivers,
@@ -45,7 +46,9 @@ const getDriverByAbbreviation = async (abbr) => {
 
     return await Driver.findOne({
         abbreviation: abbr
-    });
+    })
+    .select("-_id -__v")
+    .lean();
 
 };
 
@@ -153,6 +156,7 @@ const getAllDrivers1 = async (
 
     const drivers =
         await Driver.find(filter)
+            .select("-_id -__v")
             .sort({
                 [sortField]: sortValue
             })
