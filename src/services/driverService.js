@@ -175,6 +175,16 @@ const getAllDrivers1 = async (
 
 };
 
+const getDriverGrid = async () => {
+
+    return await Driver.find()
+        .select(
+            "fullName team -_id"
+        )
+        .lean();
+
+};
+
 module.exports = {
     getAllDrivers,
     getDriverByAbbreviation,
@@ -182,5 +192,6 @@ module.exports = {
     createDriver,
     updateDriver,
     deleteDriver,
-    getAllDrivers1
+    getAllDrivers1,
+    getDriverGrid
 };

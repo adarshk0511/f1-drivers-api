@@ -199,6 +199,27 @@ const getDrivers1 = async (
 
 };
 
+const getDriverGrid = async (
+    req,
+    res,
+    next
+) => {
+
+    try {
+
+        const drivers =
+            await driverService.getDriverGrid();
+
+        res.json(drivers);
+
+    } catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
   createDriver,
   getDrivers,
@@ -207,5 +228,6 @@ module.exports = {
   getDriversByTeam,
   searchDrivers,
   deleteDriver,
-  getDrivers1
+  getDrivers1,
+  getDriverGrid
 };
