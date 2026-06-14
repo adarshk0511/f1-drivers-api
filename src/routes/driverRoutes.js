@@ -11,7 +11,8 @@ const {
   updateDriver,
   deleteDriver,
   getDrivers1,
-  getDriverGrid
+  getDriverGrid,
+  getDriverStats
 } = require("../controllers/driverController");
 
 const validateDriver = require("../middleware/validateDriver");
@@ -25,6 +26,11 @@ router.get("/search/:keyword", searchDrivers);
 router.get(
     "/grid",
     getDriverGrid
+);
+
+router.get(
+    "/stats",
+    getDriverStats
 );
 
 router.get("/:abbr", getDriverByAbbreviation);

@@ -185,6 +185,29 @@ const getDriverGrid = async () => {
 
 };
 
+const getDriverStats = async () => {
+
+    const totalDrivers =
+        await Driver.countDocuments();
+
+    const teams =
+        await Driver.distinct("team");
+
+    const worldChampions =
+        await Driver.countDocuments({
+            championships: {
+                $gt: 0
+            }
+        });
+
+    return {
+        totalDrivers,
+        totalTeams: teams.length,
+        worldChampions
+    };
+
+};
+
 module.exports = {
     getAllDrivers,
     getDriverByAbbreviation,
@@ -193,5 +216,6 @@ module.exports = {
     updateDriver,
     deleteDriver,
     getAllDrivers1,
-    getDriverGrid
+    getDriverGrid,
+    getDriverStats
 };
