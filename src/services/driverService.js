@@ -208,6 +208,26 @@ const getDriverStats = async () => {
 
 };
 
+
+
+const getTeamStats = async () => {
+
+    const stats =
+        await Driver.aggregate([
+            {
+                $group: {
+                    _id: "$team",
+                    driverCount: {
+                        $sum: 1
+                    }
+                }
+            }
+        ]);
+
+    return stats;
+
+};
+
 module.exports = {
     getAllDrivers,
     getDriverByAbbreviation,
@@ -217,5 +237,6 @@ module.exports = {
     deleteDriver,
     getAllDrivers1,
     getDriverGrid,
+    getTeamStats,
     getDriverStats
 };

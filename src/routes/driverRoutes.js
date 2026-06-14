@@ -12,7 +12,8 @@ const {
   deleteDriver,
   getDrivers1,
   getDriverGrid,
-  getDriverStats
+  getDriverStats,
+  getTeamStats
 } = require("../controllers/driverController");
 
 const validateDriver = require("../middleware/validateDriver");
@@ -31,6 +32,11 @@ router.get(
 router.get(
     "/stats",
     getDriverStats
+);
+
+router.get(
+    "/team-stats",
+    getTeamStats
 );
 
 router.get("/:abbr", getDriverByAbbreviation);
