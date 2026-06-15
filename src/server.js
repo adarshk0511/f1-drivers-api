@@ -1,5 +1,6 @@
 require("dotenv").config();
 const connectDB = require("./config/db");
+const redisClient = require("./config/redis");
 const express = require("express");
 
 const logger = require("./middleware/logger");
@@ -12,6 +13,16 @@ const app = express();
 app.use(express.json());
 app.use(logger);
 
+(async () => {
+
+    await redisClient.connect();
+
+    console.log(
+        "Redis Connected"
+    );
+
+})();
+
 app.use("/api/drivers", driverRoutes);
 app.use("/api/teams", driverRoutes);
 app.use(notFound);
@@ -21,5 +32,5 @@ const PORT = process.env.PORT || 5000;
 
 connectDB();
 app.listen(PORT, () => {
-    console.log(`Server running on ${PORT}`);
+  console.log(`Server running on ${PORT}`);
 });
