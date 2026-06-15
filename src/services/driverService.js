@@ -212,18 +212,24 @@ const getDriverStats = async () => {
 
 const getTeamStats = async () => {
 
-    const stats =
-        await Driver.aggregate([
-            {
-                $group: {
-                    _id: "$team",
-                    driverCount: {
-                        $sum: 1
-                    }
+   const stats =
+    await Driver.aggregate([
+        {
+            $group: {
+                _id: "$team",
+                driverCount: {
+                    $sum: 1
                 }
             }
-        ]);
-
+        },
+        {
+            $project: {
+                _id: 0,
+                team: "$_id",
+                driverCount: 1
+            }
+        }
+    ]);
     return stats;
 
 };
