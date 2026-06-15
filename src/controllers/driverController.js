@@ -1,5 +1,7 @@
 const Driver = require("../models/Driver");
 const driverService = require("../services/driverService");
+const redisClient =
+    require("../config/redis");
 
 const createDriver = async (req, res, next) => {
   try {
@@ -228,8 +230,41 @@ const getDriverStats = async (
 
     try {
 
+        console.log("Checking Redis...");
+        
+        const cachedData =
+            await redisClient.get(
+                "driverStats"
+            );
+
+        if (cachedData) {
+
+            console.log(
+                "CACHE HIT"
+            );
+
+            return res.json(
+                JSON.parse(
+                    cachedData
+                )
+            );
+
+        }
+
+        console.log(
+            "CACHE MISS"
+        );
+
         const stats =
             await driverService.getDriverStats();
+
+        await redisClient.set(
+            "driverStats",
+            JSON.stringify(stats),
+            {
+                EX: 60
+            }
+        );
 
         res.json(stats);
 
