@@ -1,28 +1,49 @@
 const importQueue =
     require("../config/queue");
+const Job =
+    require("../models/Job");
 
 const importRace = async (
     req,
-    res
+    res,
+    next
 ) => {
 
-    const {
-        raceName
-    } = req.body;
+    try {
 
-    const job =
-        await importQueue.add(
-            "importRace",
-            {
-                raceName
-            }
-        );
+        const {
+            raceName
+        } = req.body;
 
-    res.status(202).json({
-        message:
-            "Race import queued",
-        jobId: job.id
-    });
+        const bullJob =
+            await importQueue.add(
+                "importRace",
+                {
+                    raceName
+                }
+            );
+
+        const job =
+            await Job.create({
+                bullJobId:
+                    bullJob.id,
+                raceName,
+                status:
+                    "queued"
+            });
+
+        res.status(202).json({
+            message:
+                "Job queued",
+            jobId:
+                bullJob.id
+        });
+
+    } catch (error) {
+
+        next(error);
+
+    }
 
 };
 
