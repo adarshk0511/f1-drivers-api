@@ -15,26 +15,35 @@ const importRace = async (
             raceName
         } = req.body;
 
+        // Create DB record first
+
+        const dbJob =
+            await Job.create({
+                raceName,
+                status: "queued",
+                bullJobId: "pending"
+            });
+
+        // Then create BullMQ job
+
         const bullJob =
             await importQueue.add(
                 "importRace",
                 {
-                    raceName
+                    raceName,
+                    dbJobId:
+                        dbJob._id.toString()
                 }
             );
 
-        const job =
-            await Job.create({
-                bullJobId:
-                    bullJob.id,
-                raceName,
-                status:
-                    "queued"
-            });
+        // Update DB record
+
+        dbJob.bullJobId =
+            bullJob.id.toString();
+
+        await dbJob.save();
 
         res.status(202).json({
-            message:
-                "Job queued",
             jobId:
                 bullJob.id
         });
