@@ -5,17 +5,22 @@ const Job = require("../models/Job");
 
 mongoose.connect(process.env.MONGO_URI);
 
+const workerId =
+    process.env.WORKER_ID ||
+    "worker-unknown";
+
 const worker = new Worker(
   "import-race",
 
   async (job) => {
-    const dbJob = await Job.findOne({
-      bullJobId: job.id,
-    });
+    const dbJob =
+    await Job.findById(
+        job.data.dbJobId
+    );
 
-    console.log("Bull Job ID:", job.id);
+    console.log("Bull Job ID:", job.id, workerId  );
 
-    console.log("DB Job Found:", dbJob);
+    console.log("DB Job Found:", dbJob, workerId  );
 
     if (dbJob) {
       dbJob.status = "processing";
@@ -23,9 +28,9 @@ const worker = new Worker(
       await dbJob.save();
     }
 
-    console.log("Processing:", job.data, job.id, dbJob.status);
+    console.log("Processing:", workerId, job.data, job.id, dbJob.status);
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     if (dbJob) {
       dbJob.status = "completed";
