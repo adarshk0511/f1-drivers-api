@@ -1,18 +1,9 @@
-const express =
-    require("express");
+const express = require("express");
 
-const router =
-    express.Router();
+const router = express.Router();
 
-const {
-    importRace
-} = require(
-    "../controllers/importController"
-);
+const { importRace } = require("../controllers/importController");
 
-router.post(
-    "/",
-    importRace
-);
+router.post("/", importRace);
 
 module.exports = router;

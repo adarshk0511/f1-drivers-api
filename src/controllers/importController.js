@@ -2,6 +2,8 @@ const importQueue =
     require("../config/queue");
 const Job =
     require("../models/Job");
+const { raceImportCounter } = require("../config/prometheus");
+
 
 const importRace = async (
     req,
@@ -11,6 +13,8 @@ const importRace = async (
 
     try {
 
+        raceImportCounter.inc();
+        
         const {
             raceName
         } = req.body;

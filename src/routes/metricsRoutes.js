@@ -2,8 +2,11 @@ const express = require("express");
 
 const router = express.Router();
 
-const client =
-    require("../config/prometheus");
+const {
+    client
+} = require(
+    "../config/prometheus"
+);
 
 router.get(
     "/",
