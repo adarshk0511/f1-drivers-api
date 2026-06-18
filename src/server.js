@@ -9,6 +9,7 @@ const errorHandler = require("./middleware/errorHandler");
 const notFound = require("./middleware/notFound");
 const driverRoutes = require("./routes/driverRoutes");
 const jobRoutes = require("./routes/jobRoutes");
+const metricsRoutes = require("./routes/metricsRoutes");
 
 const app = express();
 
@@ -26,6 +27,8 @@ app.use("/api/teams", driverRoutes);
 
 app.use("/api/import-race", importRoutes);
 app.use("/api/jobs", jobRoutes);
+
+app.use("/metrics", metricsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
