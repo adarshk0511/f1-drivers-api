@@ -9,6 +9,12 @@ mongoose.connect(process.env.MONGO_URI);
 
 const workerId = process.env.WORKER_ID || "worker-unknown";
 
+(async () => {
+  await redisClient.connect();
+
+  console.log(`${workerId} Redis Connected`);
+})();
+
 const worker = new Worker(
   "import-race",
 
@@ -35,8 +41,8 @@ const worker = new Worker(
       await dbJob.save();
       jobsProcessedCounter.inc();
 
-      await redisClient.incr("jobs_processed_total");
-      console.log("jobs_processed_total incremented");
+      const value = await redisClient.incr("jobs_processed_total");
+      console.log("Redis Counter Value:", value);
     }
 
     console.log("Completed:", job.data, job.id, dbJob.status);
