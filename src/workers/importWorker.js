@@ -2,7 +2,7 @@ const { Worker } = require("bullmq");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const Job = require("../models/Job");
-const { jobsProcessedCounter } = require("../config/prometheus");
+// const { jobsProcessedCounter } = require("../config/prometheus");
 const redisClient = require("../config/redis");
 
 mongoose.connect(process.env.MONGO_URI);
@@ -19,6 +19,9 @@ const worker = new Worker(
   "import-race",
 
   async (job) => {
+    try{
+      
+    
     const dbJob = await Job.findById(job.data.dbJobId);
 
     console.log("Bull Job ID:", job.id, workerId);
@@ -39,13 +42,25 @@ const worker = new Worker(
       dbJob.status = "completed";
 
       await dbJob.save();
-      jobsProcessedCounter.inc();
+
+      console.log("STEP 1");
+
+      // jobsProcessedCounter.inc();
+
+      console.log("STEP 2");
 
       const value = await redisClient.incr("jobs_processed_total");
+
+      console.log("STEP 3");
+
       console.log("Redis Counter Value:", value);
     }
 
     console.log("Completed:", job.data, job.id, dbJob.status);
+    }
+    catch (error) {
+      console.error("Error processing job:", error);
+    }
   },
 
   {
