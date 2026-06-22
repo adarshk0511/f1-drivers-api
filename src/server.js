@@ -10,6 +10,7 @@ const notFound = require("./middleware/notFound");
 const driverRoutes = require("./routes/driverRoutes");
 const jobRoutes = require("./routes/jobRoutes");
 const metricsRoutes = require("./routes/metricsRoutes");
+const testRoutes = require("./routes/testRoutes");
 
 const app = express();
 
@@ -29,6 +30,8 @@ app.use("/api/import-race", importRoutes);
 app.use("/api/jobs", jobRoutes);
 
 app.use("/metrics", metricsRoutes);
+
+app.use("/api/test", testRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
