@@ -19,46 +19,47 @@ const worker = new Worker(
   "import-race",
 
   async (job) => {
-    try{
-      
-    
-    const dbJob = await Job.findById(job.data.dbJobId);
+    try {
+      const startTime = Date.now();
+      const dbJob = await Job.findById(job.data.dbJobId);
 
-    console.log("Bull Job ID:", job.id, workerId);
+      console.log("Bull Job ID:", job.id, workerId);
 
-    console.log("DB Job Found:", dbJob, workerId);
+      console.log("DB Job Found:", dbJob, workerId);
 
-    if (dbJob) {
-      dbJob.status = "processing";
+      if (dbJob) {
+        dbJob.status = "processing";
 
-      await dbJob.save();
-    }
+        await dbJob.save();
+      }
 
-    console.log("Processing:", workerId, job.data, job.id, dbJob.status);
+      console.log("Processing:", workerId, job.data, job.id, dbJob.status);
 
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+      await new Promise((resolve) => setTimeout(resolve, 10000));
 
-    if (dbJob) {
-      dbJob.status = "completed";
+      if (dbJob) {
+        dbJob.status = "completed";
 
-      await dbJob.save();
+        await dbJob.save();
 
-      console.log("STEP 1");
+        // jobsProcessedCounter.inc();
 
-      // jobsProcessedCounter.inc();
+        const value = await redisClient.incr("jobs_processed_total");
 
-      console.log("STEP 2");
+        const duration = (Date.now() - startTime) / 1000;
+        await redisClient.incrByFloat(
+    "job_duration_sum",
+    duration
+);
+await redisClient.incr(
+    "job_duration_count"
+);
+        console.log("Job Duration:", duration);
+        console.log("Redis Counter Value:", value);
+      }
 
-      const value = await redisClient.incr("jobs_processed_total");
-
-      console.log("STEP 3");
-
-      console.log("Redis Counter Value:", value);
-    }
-
-    console.log("Completed:", job.data, job.id, dbJob.status);
-    }
-    catch (error) {
+      console.log("Completed:", job.data, job.id, dbJob.status);
+    } catch (error) {
       console.error("Error processing job:", error);
     }
   },

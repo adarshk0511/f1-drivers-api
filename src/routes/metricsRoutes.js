@@ -11,6 +11,25 @@ router.get("/", async (req, res) => {
 
   const jobsProcessed = await redisClient.get("jobs_processed_total");
 
+  const durationSum =
+    parseFloat(
+        await redisClient.get(
+            "job_duration_sum"
+        )
+    ) || 0;
+
+const durationCount =
+    parseInt(
+        await redisClient.get(
+            "job_duration_count"
+        )
+    ) || 0;
+
+    const averageDuration =
+    durationCount > 0
+        ? durationSum /
+          durationCount
+        : 0;
   const waitingJobs = await queueService.getWaitingJobs();
 
   const metrics = await client.register.metrics();
@@ -24,6 +43,10 @@ router.get("/", async (req, res) => {
         # HELP queue_waiting_jobs Current waiting jobs
         # TYPE queue_waiting_jobs gauge
         queue_waiting_jobs ${waitingJobs}
+
+        # HELP average_job_duration_seconds Average job duration
+        # TYPE average_job_duration_seconds gauge
+        average_job_duration_seconds ${averageDuration}
 
         `;
 
