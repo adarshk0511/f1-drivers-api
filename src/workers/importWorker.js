@@ -37,6 +37,10 @@ const worker = new Worker(
 
       await new Promise((resolve) => setTimeout(resolve, 10000));
 
+      if (job.data.raceName === "FAIL") {
+        throw new Error("Simulated Failure");
+      }
+
       if (dbJob) {
         dbJob.status = "completed";
 
@@ -47,13 +51,8 @@ const worker = new Worker(
         const value = await redisClient.incr("jobs_processed_total");
 
         const duration = (Date.now() - startTime) / 1000;
-        await redisClient.incrByFloat(
-    "job_duration_sum",
-    duration
-);
-await redisClient.incr(
-    "job_duration_count"
-);
+        await redisClient.incrByFloat("job_duration_sum", duration);
+        await redisClient.incr("job_duration_count");
         console.log("Job Duration:", duration);
         console.log("Redis Counter Value:", value);
       }
