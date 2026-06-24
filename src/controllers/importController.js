@@ -13,6 +13,8 @@ const importRace = async (
 
     try {
 
+        
+
         raceImportCounter.inc();
         
         const {
@@ -31,14 +33,23 @@ const importRace = async (
         // Then create BullMQ job
 
         const bullJob =
-            await importQueue.add(
-                "importRace",
-                {
-                    raceName,
-                    dbJobId:
-                        dbJob._id.toString()
-                }
-            );
+    await importQueue.add(
+        "importRace",
+
+        {
+            raceName,
+            dbJobId: dbJob._id.toString(),
+        },
+
+        {
+            attempts: 3,
+
+            backoff: {
+                type: "fixed",
+                delay: 5000
+            }
+        }
+    );
 
         // Update DB record
 

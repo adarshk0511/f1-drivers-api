@@ -20,6 +20,8 @@ const worker = new Worker(
 
   async (job) => {
     try {
+      console.log(`Attempt ${job.attemptsMade + 1}`);
+
       const startTime = Date.now();
       const dbJob = await Job.findById(job.data.dbJobId);
 
@@ -60,6 +62,7 @@ const worker = new Worker(
       console.log("Completed:", job.data, job.id, dbJob.status);
     } catch (error) {
       console.error("Error processing job:", error);
+        throw error;
     }
   },
 
