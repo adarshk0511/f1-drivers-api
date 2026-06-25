@@ -11,6 +11,11 @@ router.get("/", async (req, res) => {
 
   const jobsProcessed = await redisClient.get("jobs_processed_total");
 
+  const jobsFailed =
+    await redisClient.get(
+        "jobs_failed_total"
+    ) || 0;
+
   const durationSum =
     parseFloat(
         await redisClient.get(
@@ -47,6 +52,10 @@ const durationCount =
         # HELP average_job_duration_seconds Average job duration
         # TYPE average_job_duration_seconds gauge
         average_job_duration_seconds ${averageDuration}
+
+        # HELP jobs_failed_total Total permanently failed jobs
+        # TYPE jobs_failed_total counter
+        jobs_failed_total ${jobsFailed}
 
         `;
 

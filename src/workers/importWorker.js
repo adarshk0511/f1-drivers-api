@@ -76,28 +76,25 @@ const worker = new Worker(
 
 console.log("Worker Started");
 
-worker.on(
-    "failed",
+worker.on("failed", async (job, error) => {
 
-    async (job, error) => {
+    console.log(
+        `Job ${job.id} permanently failed`
+    );
 
-        console.log(
-            `Job ${job.id} permanently failed`
-        );
+    const dbJob =
+        await Job.findById(job.data.dbJobId);
 
-        const dbJob =
-            await Job.findById(
-                job.data.dbJobId
-            );
+    if (dbJob) {
 
-        if (dbJob) {
+        dbJob.status = "failed";
 
-            dbJob.status =
-                "failed";
-
-            await dbJob.save();
-
-        }
+        await dbJob.save();
 
     }
-);
+
+    await redisClient.incr(
+        "jobs_failed_total"
+    );
+
+});
