@@ -75,3 +75,29 @@ const worker = new Worker(
 );
 
 console.log("Worker Started");
+
+worker.on(
+    "failed",
+
+    async (job, error) => {
+
+        console.log(
+            `Job ${job.id} permanently failed`
+        );
+
+        const dbJob =
+            await Job.findById(
+                job.data.dbJobId
+            );
+
+        if (dbJob) {
+
+            dbJob.status =
+                "failed";
+
+            await dbJob.save();
+
+        }
+
+    }
+);
