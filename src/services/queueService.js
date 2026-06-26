@@ -1,4 +1,4 @@
-const importQueue =
+const {importQueue} =
     require(
         "../config/queue"
     );

@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 const Job = require("../models/Job");
 // const { jobsProcessedCounter } = require("../config/prometheus");
 const redisClient = require("../config/redis");
+const {
+    deadLetterQueue
+} = require("../config/queue");
 
 mongoose.connect(process.env.MONGO_URI);
 
@@ -75,26 +78,55 @@ const worker = new Worker(
 );
 
 console.log("Worker Started");
+worker.on(
+    "failed",
 
-worker.on("failed", async (job, error) => {
+    async (job, error) => {
 
-    console.log(
-        `Job ${job.id} permanently failed`
-    );
+        console.log(
+            `Job ${job.id} permanently failed`
+        );
 
-    const dbJob =
-        await Job.findById(job.data.dbJobId);
+        const dbJob =
+            await Job.findById(
+                job.data.dbJobId
+            );
 
-    if (dbJob) {
+        if (dbJob) {
 
-        dbJob.status = "failed";
+            dbJob.status = "failed";
 
-        await dbJob.save();
+            await dbJob.save();
+
+        }
+
+        await redisClient.incr(
+            "jobs_failed_total"
+        );
+
+        await deadLetterQueue.add(
+            "dead-job",
+
+            {
+                originalJobId: job.id,
+
+                raceName:
+                    job.data.raceName,
+
+                dbJobId:
+                    job.data.dbJobId,
+
+                reason:
+                    error.message,
+
+                failedAt:
+                    new Date()
+            }
+        );
+
+        console.log(
+            "Moved to Dead Letter Queue"
+        );
 
     }
-
-    await redisClient.incr(
-        "jobs_failed_total"
-    );
-
-});
+);
