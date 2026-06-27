@@ -11,6 +11,8 @@ const driverRoutes = require("./routes/driverRoutes");
 const jobRoutes = require("./routes/jobRoutes");
 const metricsRoutes = require("./routes/metricsRoutes");
 const testRoutes = require("./routes/testRoutes");
+const deadLetterQueueRoutes =
+    require("./routes/deadLetterQueueRoutes");
 
 const app = express();
 
@@ -32,6 +34,11 @@ app.use("/api/jobs", jobRoutes);
 app.use("/metrics", metricsRoutes);
 
 app.use("/api/test", testRoutes);
+
+app.use(
+    "/api/dead-jobs",
+    deadLetterQueueRoutes
+);
 
 app.use(notFound);
 app.use(errorHandler);
