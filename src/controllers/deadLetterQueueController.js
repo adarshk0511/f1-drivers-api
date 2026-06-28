@@ -15,6 +15,31 @@ const getDeadJobs = async (req, res) => {
     }
 };
 
+const retryDeadJob = async (
+    req,
+    res
+) => {
+
+    try {
+
+        const response =
+            await deadLetterQueueService.retryDeadJob(
+                req.params.id
+            );
+
+        res.json(response);
+
+    } catch (error) {
+
+        res.status(404).json({
+            message: error.message
+        });
+
+    }
+
+};
+
 module.exports = {
-    getDeadJobs
+    getDeadJobs,
+    retryDeadJob
 };

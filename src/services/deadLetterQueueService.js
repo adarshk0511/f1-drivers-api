@@ -1,4 +1,6 @@
 const { deadLetterQueue } = require("../config/queue");
+const { importQueue } =
+    require("../config/queue");
 
 const getDeadJobs = async () => {
     const jobs = await deadLetterQueue.getJobs([
@@ -17,6 +19,42 @@ const getDeadJobs = async () => {
     }));
 };
 
+const retryDeadJob = async (jobId) => {
+
+    const deadJob =
+        await deadLetterQueue.getJob(jobId);
+
+    if (!deadJob) {
+        throw new Error("Dead job not found");
+    }
+
+    await importQueue.add(
+        "importRace",
+
+        {
+            raceName: deadJob.data.raceName,
+            dbJobId: deadJob.data.dbJobId
+        },
+
+        {
+            attempts: 3,
+
+            backoff: {
+                type: "fixed",
+                delay: 5000
+            }
+        }
+    );
+
+    await deadJob.remove();
+
+    return {
+        message: "Job retried successfully"
+    };
+
+};
+
 module.exports = {
-    getDeadJobs
+    getDeadJobs,
+    retryDeadJob
 };
