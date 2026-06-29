@@ -9,6 +9,11 @@ const jobSchema =
                 required: true
             },
 
+            requestId: {
+                type: String,
+                required: true
+            },
+
             raceName: {
                 type: String,
                 required: true

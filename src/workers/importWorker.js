@@ -105,16 +105,14 @@ const worker = new Worker(
         );
       }
 
-      logger.info(
-        {
+        logger.info({
           worker: workerId,
           requestId: job.data.requestId,
           jobId: job.id,
+          mongoJobId: job.data.dbJobId,
           raceName: job.data.raceName,
-          status: dbJob.status,
-        },
-        "Job Completed",
-      );
+          status: dbJob.status
+      }, "Job Completed");
     } catch (error) {
       logger.error(
         {

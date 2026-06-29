@@ -26,6 +26,7 @@ const importRace = async (
         const dbJob =
             await Job.create({
                 raceName,
+                requestId: req.requestId,
                 status: "queued",
                 bullJobId: "pending"
             });
