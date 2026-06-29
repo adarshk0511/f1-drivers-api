@@ -6,9 +6,7 @@ const Job = require("../models/Job");
 const logger = require("../config/logger");
 
 const redisClient = require("../config/redis");
-const {
-    deadLetterQueue
-} = require("../config/queue");
+const { deadLetterQueue } = require("../config/queue");
 
 mongoose.connect(process.env.MONGO_URI);
 
@@ -17,9 +15,12 @@ const workerId = process.env.WORKER_ID || "worker-unknown";
 (async () => {
   await redisClient.connect();
 
-  logger.info({
-    worker: workerId
-}, "Redis Connected");
+  logger.info(
+    {
+      worker: workerId,
+    },
+    "Redis Connected",
+  );
 })();
 
 const worker = new Worker(
@@ -27,20 +28,27 @@ const worker = new Worker(
 
   async (job) => {
     try {
-      logger.info({
-    worker: workerId,
-    attempt: job.attemptsMade + 1,
-    jobId: job.id
-}, "Processing Attempt");
+      logger.info(
+        {
+          worker: workerId,
+          requestId: job.data.requestId,
+          attempt: job.attemptsMade + 1,
+          jobId: job.id,
+        },
+        "Processing Attempt",
+      );
 
       const startTime = Date.now();
       const dbJob = await Job.findById(job.data.dbJobId);
 
-      logger.info({
-    worker: workerId,
-    bullJobId: job.id
-}, "Bull Job Received");
-
+      logger.info(
+        {
+          worker: workerId,
+          requestId: job.data.requestId,
+          bullJobId: job.id,
+        },
+        "Bull Job Received",
+      );
 
       if (dbJob) {
         dbJob.status = "processing";
@@ -48,12 +56,16 @@ const worker = new Worker(
         await dbJob.save();
       }
 
-      logger.info({
-    worker: workerId,
-    jobId: job.id,
-    raceName: job.data.raceName,
-    status: dbJob.status
-}, "Processing Job");
+      logger.info(
+        {
+          worker: workerId,
+          requestId: job.data.requestId,
+          jobId: job.id,
+          raceName: job.data.raceName,
+          status: dbJob.status,
+        },
+        "Processing Job",
+      );
 
       await new Promise((resolve) => setTimeout(resolve, 10000));
 
@@ -73,33 +85,47 @@ const worker = new Worker(
         const duration = (Date.now() - startTime) / 1000;
         await redisClient.incrByFloat("job_duration_sum", duration);
         await redisClient.incr("job_duration_count");
-        
-        logger.info({
-    worker: workerId,
-    duration
-}, "Job Duration");
 
-        logger.info({
-    worker: workerId,
-    jobsProcessed: value
-}, "Redis Counter Updated");
+        logger.info(
+          {
+            worker: workerId,
+            requestId: job.data.requestId,
+            duration,
+          },
+          "Job Duration",
+        );
+
+        logger.info(
+          {
+            worker: workerId,
+            requestId: job.data.requestId,
+            jobsProcessed: value,
+          },
+          "Redis Counter Updated",
+        );
       }
 
-      logger.info({
-    worker: workerId,
-    jobId: job.id,
-    raceName: job.data.raceName,
-    status: dbJob.status
-}, "Job Completed");
-
-
+      logger.info(
+        {
+          worker: workerId,
+          requestId: job.data.requestId,
+          jobId: job.id,
+          raceName: job.data.raceName,
+          status: dbJob.status,
+        },
+        "Job Completed",
+      );
     } catch (error) {
-      logger.error({
-    worker: workerId,
-    jobId: job.id,
-    error: error.message
-}, "Job Failed");
-        throw error;
+      logger.error(
+        {
+          worker: workerId,
+          requestId: job.data.requestId,
+          jobId: job.id,
+          error: error.message,
+        },
+        "Job Failed",
+      );
+      throw error;
     }
   },
 
@@ -111,59 +137,45 @@ const worker = new Worker(
   },
 );
 
-logger.info({
-    worker: workerId
-}, "Worker Started");
+logger.info(
+  {
+    worker: workerId,
+  },
+  "Worker Started",
+);
 
 worker.on(
-    "failed",
+  "failed",
 
-    async (job, error) => {
+  async (job, error) => {
+    console.log(`Job ${job.id} permanently failed`);
 
-        console.log(
-            `Job ${job.id} permanently failed`
-        );
+    const dbJob = await Job.findById(job.data.dbJobId);
 
-        const dbJob =
-            await Job.findById(
-                job.data.dbJobId
-            );
+    if (dbJob) {
+      dbJob.status = "failed";
 
-        if (dbJob) {
-
-            dbJob.status = "failed";
-
-            await dbJob.save();
-
-        }
-
-        await redisClient.incr(
-            "jobs_failed_total"
-        );
-
-        await deadLetterQueue.add(
-            "dead-job",
-
-            {
-                originalJobId: job.id,
-
-                raceName:
-                    job.data.raceName,
-
-                dbJobId:
-                    job.data.dbJobId,
-
-                reason:
-                    error.message,
-
-                failedAt:
-                    new Date()
-            }
-        );
-
-        console.log(
-            "Moved to Dead Letter Queue"
-        );
-
+      await dbJob.save();
     }
+
+    await redisClient.incr("jobs_failed_total");
+
+    await deadLetterQueue.add(
+      "dead-job",
+
+      {
+        originalJobId: job.id,
+
+        raceName: job.data.raceName,
+
+        dbJobId: job.data.dbJobId,
+
+        reason: error.message,
+
+        failedAt: new Date(),
+      },
+    );
+
+    console.log("Moved to Dead Letter Queue");
+  },
 );

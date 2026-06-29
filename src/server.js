@@ -13,6 +13,8 @@ const metricsRoutes = require("./routes/metricsRoutes");
 const testRoutes = require("./routes/testRoutes");
 const deadLetterQueueRoutes =
     require("./routes/deadLetterQueueRoutes");
+const requestId =
+    require("./middleware/requestId");
 
 const app = express();
 
@@ -24,6 +26,8 @@ app.use(logger);
 
   console.log("Redis Connected");
 })();
+
+app.use(requestId);
 
 app.use("/api/drivers", driverRoutes);
 app.use("/api/teams", driverRoutes);

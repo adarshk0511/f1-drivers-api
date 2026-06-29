@@ -39,6 +39,7 @@ const importRace = async (
         {
             raceName,
             dbJobId: dbJob._id.toString(),
+            requestId: req.requestId
         },
 
         {
@@ -65,6 +66,10 @@ const importRace = async (
 
     } catch (error) {
 
+        logger.error({
+            error: error.message,
+            requestId: req.requestId
+        }, "Error in importRace");
         next(error);
 
     }
