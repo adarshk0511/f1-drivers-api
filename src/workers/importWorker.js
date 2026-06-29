@@ -3,6 +3,8 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const Job = require("../models/Job");
 // const { jobsProcessedCounter } = require("../config/prometheus");
+const logger = require("../config/logger");
+
 const redisClient = require("../config/redis");
 const {
     deadLetterQueue
@@ -15,7 +17,9 @@ const workerId = process.env.WORKER_ID || "worker-unknown";
 (async () => {
   await redisClient.connect();
 
-  console.log(`${workerId} Redis Connected`);
+  logger.info({
+    worker: workerId
+}, "Redis Connected");
 })();
 
 const worker = new Worker(
@@ -23,14 +27,20 @@ const worker = new Worker(
 
   async (job) => {
     try {
-      console.log(`Attempt ${job.attemptsMade + 1}`);
+      logger.info({
+    worker: workerId,
+    attempt: job.attemptsMade + 1,
+    jobId: job.id
+}, "Processing Attempt");
 
       const startTime = Date.now();
       const dbJob = await Job.findById(job.data.dbJobId);
 
-      console.log("Bull Job ID:", job.id, workerId);
+      logger.info({
+    worker: workerId,
+    bullJobId: job.id
+}, "Bull Job Received");
 
-      console.log("DB Job Found:", dbJob, workerId);
 
       if (dbJob) {
         dbJob.status = "processing";
@@ -38,7 +48,12 @@ const worker = new Worker(
         await dbJob.save();
       }
 
-      console.log("Processing:", workerId, job.data, job.id, dbJob.status);
+      logger.info({
+    worker: workerId,
+    jobId: job.id,
+    raceName: job.data.raceName,
+    status: dbJob.status
+}, "Processing Job");
 
       await new Promise((resolve) => setTimeout(resolve, 10000));
 
@@ -58,13 +73,32 @@ const worker = new Worker(
         const duration = (Date.now() - startTime) / 1000;
         await redisClient.incrByFloat("job_duration_sum", duration);
         await redisClient.incr("job_duration_count");
-        console.log("Job Duration:", duration);
-        console.log("Redis Counter Value:", value);
+        
+        logger.info({
+    worker: workerId,
+    duration
+}, "Job Duration");
+
+        logger.info({
+    worker: workerId,
+    jobsProcessed: value
+}, "Redis Counter Updated");
       }
 
-      console.log("Completed:", job.data, job.id, dbJob.status);
+      logger.info({
+    worker: workerId,
+    jobId: job.id,
+    raceName: job.data.raceName,
+    status: dbJob.status
+}, "Job Completed");
+
+
     } catch (error) {
-      console.error("Error processing job:", error);
+      logger.error({
+    worker: workerId,
+    jobId: job.id,
+    error: error.message
+}, "Job Failed");
         throw error;
     }
   },
@@ -77,7 +111,10 @@ const worker = new Worker(
   },
 );
 
-console.log("Worker Started");
+logger.info({
+    worker: workerId
+}, "Worker Started");
+
 worker.on(
     "failed",
 
