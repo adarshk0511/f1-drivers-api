@@ -1,82 +1,55 @@
-const {importQueue} =
-    require("../config/queue");
-const Job =
-    require("../models/Job");
+const { importQueue } = require("../config/queue");
+const Job = require("../models/Job");
 const { raceImportCounter } = require("../config/prometheus");
+const asyncHandler = require("../middleware/asyncHandler");
+
+const importRace = asyncHandler(async (req, res, next) => {
+  raceImportCounter.inc();
 
 
-const importRace = async (
-    req,
-    res,
-    next
-) => {
+  const { raceName } = req.body;
 
-    try {
+  // Create DB record first
 
-        
+  const dbJob = await Job.create({
+    raceName,
+    requestId: req.requestId,
+    status: "queued",
+    bullJobId: "pending",
+  });
 
-        raceImportCounter.inc();
-        
-        const {
-            raceName
-        } = req.body;
+  // Then create BullMQ job
 
-        // Create DB record first
+  const bullJob = await importQueue.add(
+    "importRace",
 
-        const dbJob =
-            await Job.create({
-                raceName,
-                requestId: req.requestId,
-                status: "queued",
-                bullJobId: "pending"
-            });
+    {
+      raceName,
+      dbJobId: dbJob._id.toString(),
+      requestId: req.requestId,
+    },
 
-        // Then create BullMQ job
+    {
+      attempts: 3,
 
-        const bullJob =
-    await importQueue.add(
-        "importRace",
+      backoff: {
+        type: "fixed",
+        delay: 5000,
+      },
+    },
+  );
 
-        {
-            raceName,
-            dbJobId: dbJob._id.toString(),
-            requestId: req.requestId
-        },
+  // Update DB record
 
-        {
-            attempts: 3,
+  dbJob.bullJobId = bullJob.id.toString();
 
-            backoff: {
-                type: "fixed",
-                delay: 5000
-            }
-        }
-    );
+  await dbJob.save();
 
-        // Update DB record
-
-        dbJob.bullJobId =
-            bullJob.id.toString();
-
-        await dbJob.save();
-
-        res.status(202).json({
-            jobId:
-                bullJob.id
-        });
-
-    } catch (error) {
-
-        logger.error({
-            error: error.message,
-            requestId: req.requestId
-        }, "Error in importRace");
-        next(error);
-
-    }
-
-};
+  res.status(202).json({
+    jobId: bullJob.id,
+  });
+});
 
 module.exports = {
-    importRace
+  importRace,
 };
