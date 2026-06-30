@@ -1,10 +1,37 @@
-const errorHandler = (err, req, res, next) => {
+const logger = require("../config/logger");
 
-    console.error(err);
+const errorHandler = (
+    err,
+    req,
+    res,
+    next
+) => {
 
-    res.status(500).json({
+    const statusCode =
+        err.statusCode || 500;
+
+    logger.error(
+        {
+            requestId: req.requestId,
+            method: req.method,
+            url: req.originalUrl,
+            statusCode,
+            error: err.message,
+            stack: err.stack
+        },
+        "Unhandled Exception"
+    );
+
+    res.status(statusCode).json({
+
         success: false,
-        message: err.message
+
+        requestId: req.requestId,
+
+        message: err.message ||
+
+            "Internal Server Error"
+
     });
 
 };
