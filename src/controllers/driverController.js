@@ -2,6 +2,8 @@ const Driver = require("../models/Driver");
 const driverService = require("../services/driverService");
 const redisClient =
     require("../config/redis");
+const AppError =
+require("../utils/AppError");
 
 const createDriver = async (req, res, next) => {
   try {
@@ -44,10 +46,10 @@ const getDriverByAbbreviation = async (req, res, next) => {
     const driver = await driverService.getDriverByAbbreviation(req.params.abbr);
 
     if (!driver) {
-      return res.status(404).json({
-        success: false,
-        message: "Driver not found",
-      });
+       throw new AppError(
+        "Driver not found",
+        404
+    );
     }
 
     res.json(driver);
