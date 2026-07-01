@@ -15,6 +15,11 @@ const deadLetterQueueRoutes =
     require("./routes/deadLetterQueueRoutes");
 const requestId =
     require("./middleware/requestId");
+const swaggerUi =
+require("swagger-ui-express");
+
+const swaggerSpec =
+require("./config/swagger");
 
 const app = express();
 
@@ -28,6 +33,12 @@ app.use(logger);
 })();
 
 app.use(requestId);
+
+app.use(
+"/api/docs",
+swaggerUi.serve,
+swaggerUi.setup(swaggerSpec)
+);
 
 app.use("/api/drivers", driverRoutes);
 app.use("/api/teams", driverRoutes);
