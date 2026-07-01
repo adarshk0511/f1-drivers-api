@@ -19,6 +19,20 @@ const {
 const validateDriver = require("../middleware/validateDriver");
 const apiKey = require("../middleware/apiKey");
 
+/**
+ * @swagger
+ * /api/drivers:
+ *   get:
+ *     summary: Get all Formula 1 drivers
+ *     description: Returns all drivers stored in MongoDB.
+ *     tags:
+ *       - Drivers
+ *     responses:
+ *       200:
+ *         description: Drivers retrieved successfully.
+ *       500:
+ *         description: Internal Server Error.
+ */
 router.get("/", apiKey, getDrivers1);
 router.post("/", validateDriver, createDriver);
 
