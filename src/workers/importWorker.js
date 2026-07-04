@@ -6,7 +6,9 @@ const Job = require("../models/Job");
 const logger = require("../config/logger");
 
 const redisClient = require("../config/redis");
-const { deadLetterQueue } = require("../config/queue");
+const {
+    getDeadLetterQueue,
+} = require("../config/queueManager");
 
 mongoose.connect(process.env.MONGO_URI);
 
@@ -158,6 +160,8 @@ worker.on(
 
     await redisClient.incr("jobs_failed_total");
 
+    const deadLetterQueue =
+    getDeadLetterQueue();
     await deadLetterQueue.add(
       "dead-job",
 

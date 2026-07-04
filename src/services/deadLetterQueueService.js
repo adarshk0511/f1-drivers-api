@@ -1,8 +1,12 @@
-const { deadLetterQueue } = require("../config/queue");
-const { importQueue } =
-    require("../config/queue");
+const {
+    getImportQueue,
+    getDeadLetterQueue
+} = require("../config/queueManager");
 
 const getDeadJobs = async () => {
+
+    const deadLetterQueue =
+    getDeadLetterQueue();
     const jobs = await deadLetterQueue.getJobs([
         "waiting",
         "delayed",
@@ -21,12 +25,16 @@ const getDeadJobs = async () => {
 
 const retryDeadJob = async (jobId) => {
 
+    const deadLetterQueue =
+    getDeadLetterQueue();
     const deadJob =
         await deadLetterQueue.getJob(jobId);
 
     if (!deadJob) {
         throw new Error("Dead job not found");
     }
+
+    const importQueue = getImportQueue();
 
     await importQueue.add(
         "importRace",

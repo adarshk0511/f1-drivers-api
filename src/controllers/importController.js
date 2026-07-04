@@ -1,4 +1,6 @@
-const { importQueue } = require("../config/queue");
+const {
+    getImportQueue,
+} = require("../config/queueManager");
 const Job = require("../models/Job");
 const { raceImportCounter } = require("../config/prometheus");
 const asyncHandler = require("../middleware/asyncHandler");
@@ -19,7 +21,8 @@ const importRace = asyncHandler(async (req, res, next) => {
   });
 
   // Then create BullMQ job
-
+  const importQueue =
+    getImportQueue();
   const bullJob = await importQueue.add(
     "importRace",
 
