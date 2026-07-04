@@ -1,6 +1,6 @@
 require("dotenv").config();
-const connectDB = require("./config/db");
-const redisClient = require("./config/redis");
+// const connectDB = require("./config/db");
+// const redisClient = require("./config/redis");
 const express = require("express");
 const importRoutes = require("./routes/importRoutes");
 
@@ -26,11 +26,11 @@ const app = express();
 app.use(express.json());
 app.use(logger);
 
-(async () => {
-  await redisClient.connect();
+// (async () => {
+//   await redisClient.connect();
 
-  console.log("Redis Connected");
-})();
+//   console.log("Redis Connected");
+// })();
 
 app.use(requestId);
 
