@@ -2,7 +2,7 @@ const apiKey = (req, res, next) => {
 
     const key = req.headers["x-api-key"];
 
-    if (key !== "f1-secret") {
+    if (key !== process.env.API_KEY) {
         return res.status(401).json({
             message: "Invalid API Key"
         });
