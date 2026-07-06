@@ -23,6 +23,18 @@ function initializeQueues() {
 
 function getImportQueue() {
 
+    if (process.env.NODE_ENV === "test") {
+
+        return {
+
+            add: async () => {},
+
+            getWaitingCount: async () => 0,
+
+        };
+
+    }
+
     if (!importQueue) {
 
         throw new Error(
@@ -32,9 +44,22 @@ function getImportQueue() {
     }
 
     return importQueue;
+
 }
 
 function getDeadLetterQueue() {
+
+    if (process.env.NODE_ENV === "test") {
+
+        return {
+
+            add: async () => {},
+
+            getJobs: async () => [],
+
+        };
+
+    }
 
     if (!deadLetterQueue) {
 
@@ -45,6 +70,7 @@ function getDeadLetterQueue() {
     }
 
     return deadLetterQueue;
+
 }
 
 module.exports = {
