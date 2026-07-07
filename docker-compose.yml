@@ -28,19 +28,19 @@ services:
     ports:
     - "6379:6379"
   
-  worker1:
+  # worker1:
 
-    build: .
+  #   build: .
 
-    command: node src/workers/importWorker.js
+  #   command: node src/workers/importWorker.js
 
-    depends_on:
-      - redis
-      - mongo
+  #   depends_on:
+  #     - redis
+  #     - mongo
 
-    environment:
-      WORKER_ID: worker-1
-      MONGO_URI: mongodb://mongo:27017/f1drivers
+  #   environment:
+  #     WORKER_ID: worker-1
+  #     MONGO_URI: mongodb://mongo:27017/f1drivers
   
   # worker2:
 
@@ -70,22 +70,22 @@ services:
   #     - redis
   #     - mongo
 
-  prometheus:
+  # prometheus:
 
-    image: prom/prometheus
+  #   image: prom/prometheus
 
-    ports:
-      - "9090:9090"
+  #   ports:
+  #     - "9090:9090"
 
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
 
-  grafana:
+  # grafana:
 
-    image: grafana/grafana
+  #   image: grafana/grafana
 
-    ports:
-      - "3000:3000"
+  #   ports:
+  #     - "3000:3000"
 
-    depends_on:
-    - prometheus
+  #   depends_on:
+  #   - prometheus
