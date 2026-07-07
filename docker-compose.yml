@@ -42,33 +42,33 @@ services:
       WORKER_ID: worker-1
       MONGO_URI: mongodb://mongo:27017/f1drivers
   
-  worker2:
+  # worker2:
 
-    build: .
+  #   build: .
 
-    command: node src/workers/importWorker.js
+  #   command: node src/workers/importWorker.js
 
-    environment:
-      WORKER_ID: worker-2
-      MONGO_URI: mongodb://mongo:27017/f1drivers
+  #   environment:
+  #     WORKER_ID: worker-2
+  #     MONGO_URI: mongodb://mongo:27017/f1drivers
 
-    depends_on:
-    - redis
-    - mongo
+  #   depends_on:
+  #   - redis
+  #   - mongo
 
-  worker3:
+  # worker3:
 
-    build: .
+  #   build: .
 
-    command: node src/workers/importWorker.js
+  #   command: node src/workers/importWorker.js
 
-    environment:
-      WORKER_ID: worker-3
-      MONGO_URI: mongodb://mongo:27017/f1drivers
+  #   environment:
+  #     WORKER_ID: worker-3
+  #     MONGO_URI: mongodb://mongo:27017/f1drivers
 
-    depends_on:
-      - redis
-      - mongo
+  #   depends_on:
+  #     - redis
+  #     - mongo
 
   prometheus:
 
