@@ -3,6 +3,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const AppError =
 require("../utils/AppError");
+const { generateToken } = require("../utils/jwt");
 
 const registerUser = async (userData) => {
 
@@ -82,12 +83,26 @@ const loginUser = async (loginData) => {
     }
 
     // Step 3: Return user
-    return {
+    // Generate JWT
+const token = generateToken({
+    id: user._id,
+    email: user.email,
+    role: user.role,
+});
+
+// Return safe response
+return {
+
+    user: {
         id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-    };
+    },
+
+    token,
+
+};
 
 };
 
