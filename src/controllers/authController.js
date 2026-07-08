@@ -4,23 +4,6 @@ require("../services/authService");
 const registerUser =
 async (req, res) => {
 
-
-    // Validation
-
-    // Check email
-
-    // Hash password
-
-    // Save user
-
-    // Generate JWT
-
-    // Send Email
-
-    // Logging
-
-    // Analytics
-
     const user =
     await authService.registerUser(req.body);
 
@@ -32,8 +15,25 @@ async (req, res) => {
 
 };
 
+const loginUser = async (req, res) => {
+
+    const user =
+        await authService.loginUser(
+            req.body
+        );
+
+    res.status(200).json({
+        success: true,
+        message: "Login successful",
+        data: user,
+    });
+
+};
+
 module.exports = {
 
     registerUser,
+    loginUser
+
 
 };
