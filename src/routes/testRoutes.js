@@ -1,35 +1,23 @@
-const express =
-    require("express");
+const express = require("express");
+const router = express.Router();
 
-    const authenticate =
-require("../middleware/authMiddleware");
+const authenticate = require("../middleware/authMiddleware");
+const { getQueueStats } = require("../controllers/testController");
+const authorize = require("../middleware/authorize");
 
-const router =
-    express.Router();
-
-const {
-    getQueueStats
-} = require(
-    "../controllers/testController"
-);
-
-router.get(
-    "/queue-stats",
-    getQueueStats
-);
-
+router.get("/queue-stats", getQueueStats);
 
 router.get(
     "/protected",
     authenticate,
+    authorize("admin"),
     (req,res)=>{
         res.json({
-            success: true,
-            message: "Protected Route Accessed",
-            user: req.user,
+            success:true,
+            message:"Admin Access Granted",
+            user:req.user
         });
     }
 );
 
-module.exports =
-    router;
+module.exports = router;
