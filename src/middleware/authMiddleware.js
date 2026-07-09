@@ -1,55 +1,42 @@
 const jwt = require("jsonwebtoken");
-
 const AppError = require("../utils/AppError");
+const User = require("../models/User");
+8;
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
+  try {
+    // Step 1: Read Authorization Header
+    const authHeader = req.headers.authorization;
 
-    try {
-
-        // Step 1: Read Authorization Header
-        const authHeader = req.headers.authorization;
-
-        if (!authHeader) {
-
-            throw new AppError(
-                "Authorization header missing",
-                401
-            );
-
-        }
-
-        // Step 2: Check Header Format
-        if (!authHeader.startsWith("Bearer ")) {
-
-            throw new AppError(
-                "Invalid Authorization header format",
-                401
-            );
-
-        }
-
-        // Step 3: Extract Token
-        const token = authHeader.split(" ")[1];
-
-        // Step 4: Verify Token
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET
-        );
-
-        // Step 5: Attach decoded payload to request
-        req.user = decoded;
-
-        next();
-
+    if (!authHeader) {
+      throw new AppError("Authorization header missing", 401);
     }
 
-    catch (error) {
-
-        next(error);
-
+    // Step 2: Check Header Format
+    if (!authHeader.startsWith("Bearer ")) {
+      throw new AppError("Invalid Authorization header format", 401);
     }
 
+    // Step 3: Extract Token
+    const token = authHeader.split(" ")[1];
+
+    // Verify JWT
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Load latest user from database
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      throw new AppError("User no longer exists", 401);
+    }
+
+    // Attach latest user
+    req.user = user;
+
+    next();
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = authenticate;
