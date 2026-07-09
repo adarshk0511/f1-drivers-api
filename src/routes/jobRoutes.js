@@ -1,19 +1,11 @@
-const express =
-    require("express");
+const express = require("express");
+const router = express.Router();
 
-const router =
-    express.Router();
+const authenticate = require("../middleware/authMiddleware");
+const authorize = require("../middleware/authorize");
 
-const {
-    getJobStatus
-} = require(
-    "../controllers/jobController"
-);
+const { getJobStatus } = require("../controllers/jobController");
 
-router.get(
-    "/:id",
-    getJobStatus
-);
+router.get("/:id", authenticate, getJobStatus);
 
-module.exports =
-    router;
+module.exports = router;
