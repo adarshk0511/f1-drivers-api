@@ -17,11 +17,20 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
 const authRoutes = require("./routes/authRoutes");
 const helmet = require("helmet");
+const cors = require("cors");
 
 const app = express();
 
 // Security headers
 app.use(helmet());
+
+// CORS
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        credentials: true,
+    })
+);
 
 // Parse JSON
 app.use(express.json());
