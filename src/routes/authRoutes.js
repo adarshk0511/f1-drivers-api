@@ -1,6 +1,10 @@
 const express = require("express");
-
 const router = express.Router();
+
+const {
+    authLimiter
+} =
+require("../middleware/rateLimiter");
 
 const {
     registerUser,
@@ -18,6 +22,7 @@ router.post(
 
 router.post(
     "/login",
+    authLimiter,
     loginUser
 );
 
