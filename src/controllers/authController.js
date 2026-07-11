@@ -20,17 +20,41 @@ const loginUser = async (req, res) => {
     const loginResponse =
         await authService.loginUser(req.body);
 
-    res.status(200).json({
+        res
+        .cookie(
 
-        success: true,
+            "refreshToken",
 
-        message: "Login successful",
+            loginResponse.refreshToken,
 
-        data: loginResponse.user,
+            {
 
-        token: loginResponse.token,
+                httpOnly: true,
 
-    });
+                secure: false,
+
+                sameSite: "lax",
+
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+
+            }
+
+        )
+
+        .status(200)
+
+        .json({
+
+            success: true,
+
+            message: "Login successful",
+
+            data: loginResponse.user,
+
+            accessToken:
+                loginResponse.accessToken,
+
+        });
 
 };
 
