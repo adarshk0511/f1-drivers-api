@@ -3,7 +3,10 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const AppError =
 require("../utils/AppError");
-const { generateToken } = require("../utils/jwt");
+const {
+    generateAccessToken,
+    generateRefreshToken,
+} = require("../utils/jwt");
 
 const registerUser = async (userData) => {
 
@@ -83,26 +86,46 @@ const loginUser = async (loginData) => {
     }
 
     // Step 3: Return user
-    // Generate JWT
-const token = generateToken({
-    id: user._id,
-    email: user.email,
-    role: user.role,
-});
+    // Generate Access Token
+    const accessToken =
+        generateAccessToken({
 
-// Return safe response
-return {
+            id: user._id,
 
-    user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-    },
+            email: user.email,
 
-    token,
+            role: user.role,
 
-};
+        });
+
+    // Generate Refresh Token
+    const refreshToken =
+        generateRefreshToken({
+
+            id: user._id,
+
+        });
+
+    // Return Login Response
+    return {
+
+        user: {
+
+            id: user._id,
+
+            name: user.name,
+
+            email: user.email,
+
+            role: user.role,
+
+        },
+
+        accessToken,
+
+        refreshToken,
+
+    };
 
 };
 

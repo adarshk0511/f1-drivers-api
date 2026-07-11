@@ -1,9 +1,7 @@
 const jwt = require("jsonwebtoken");
-const logger = require("../config/logger");
 
-const generateToken = (user) => {
+const generateAccessToken = (user) => {
 
-    logger.info(process.env.JWT_SECRET);
     return jwt.sign(
 
         {
@@ -12,10 +10,28 @@ const generateToken = (user) => {
             role: user.role,
         },
 
-        process.env.JWT_SECRET,
+        process.env.ACCESS_TOKEN_SECRET,
 
         {
-            expiresIn: "1h",
+            expiresIn: "15m",
+        }
+
+    );
+
+};
+
+const generateRefreshToken = (user) => {
+
+    return jwt.sign(
+
+        {
+            id: user.id,
+        },
+
+        process.env.REFRESH_TOKEN_SECRET,
+
+        {
+            expiresIn: "7d",
         }
 
     );
@@ -24,6 +40,8 @@ const generateToken = (user) => {
 
 module.exports = {
 
-    generateToken,
+    generateAccessToken,
+
+    generateRefreshToken,
 
 };
