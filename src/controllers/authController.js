@@ -1,87 +1,79 @@
-const authService =
-require("../services/authService");
+const authService = require("../services/authService");
 
-const registerUser =
-async (req, res) => {
+const registerUser = async (req, res) => {
+  const user = await authService.registerUser(req.body);
 
-    const user =
-    await authService.registerUser(req.body);
-
-    res.status(201).json({
-        success: true,
-        message: "User registered successfully",
-        data: user,
-    });
-
+  res.status(201).json({
+    success: true,
+    message: "User registered successfully",
+    data: user,
+  });
 };
 
 const loginUser = async (req, res) => {
+  const loginResponse = await authService.loginUser(req.body);
 
-    const loginResponse =
-        await authService.loginUser(req.body);
+  res
+    .cookie(
+      "refreshToken",
 
-        res
-        .cookie(
+      loginResponse.refreshToken,
 
-            "refreshToken",
+      {
+        httpOnly: true,
 
-            loginResponse.refreshToken,
+        secure: false,
 
-            {
+        sameSite: "lax",
 
-                httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      },
+    )
 
-                secure: false,
+    .status(200)
 
-                sameSite: "lax",
+    .json({
+      success: true,
 
-                maxAge: 7 * 24 * 60 * 60 * 1000,
+      message: "Login successful",
 
-            }
+      data: loginResponse.user,
 
-        )
-
-        .status(200)
-
-        .json({
-
-            success: true,
-
-            message: "Login successful",
-
-            data: loginResponse.user,
-
-            accessToken:
-                loginResponse.accessToken,
-
-        });
-
+      accessToken: loginResponse.accessToken,
+    });
 };
 
 const refreshToken = async (req, res) => {
+  const tokens = await authService.refreshAccessToken(req.cookies.refreshToken);
 
-    const accessToken =
+  res
+    .cookie(
+      "refreshToken",
 
-        await authService.refreshAccessToken(
+      tokens.refreshToken,
 
-            req.cookies.refreshToken
+      {
+        httpOnly: true,
 
-        );
+        secure: false,
 
-    res.status(200).json({
+        sameSite: "lax",
 
-        success: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      },
+    )
 
-        accessToken,
+    .status(200)
 
+    .json({
+      success: true,
+
+      accessToken: tokens.accessToken,
     });
-
 };
 
 module.exports = {
-
-    registerUser,
-    loginUser,
-    refreshToken
-
+  registerUser,
+  loginUser,
+  refreshToken,
 };

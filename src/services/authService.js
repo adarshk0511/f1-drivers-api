@@ -137,6 +137,23 @@ const refreshAccessToken = async (refreshToken) => {
     );
   }
 
+  // Remove old Refresh Token
+  await RefreshToken.deleteOne({
+    _id: storedToken._id,
+  });
+
+  const newRefreshToken = generateRefreshToken({
+    id: user._id,
+  });
+
+  await RefreshToken.create({
+    user: user._id,
+
+    token: newRefreshToken,
+
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  });
+
   // Generate new Access Token
   const accessToken = generateAccessToken({
     id: user._id,
@@ -146,7 +163,11 @@ const refreshAccessToken = async (refreshToken) => {
     role: user.role,
   });
 
-  return accessToken;
+  return {
+    accessToken,
+
+    refreshToken: newRefreshToken,
+  };
 };
 
 module.exports = {
