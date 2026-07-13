@@ -1,191 +1,156 @@
 const logger = require("../config/logger");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const AppError =
-require("../utils/AppError");
+const AppError = require("../utils/AppError");
 const jwt = require("jsonwebtoken");
-const {
-    generateAccessToken,
-    generateRefreshToken,
-} = require("../utils/jwt");
+const { generateAccessToken, generateRefreshToken } = require("../utils/jwt");
+const RefreshToken = require("../models/RefreshToken");
 
 const registerUser = async (userData) => {
+  console.log("User received in service:");
 
-    console.log("User received in service:");
+  const { name, email, password } = userData;
 
-     const {
-        name,
-        email,
-        password,
-    } = userData;
+  const existingUser = await User.findOne({
+    email,
+  });
 
-    const existingUser =
-    await User.findOne({
-        email,
-    });
+  if (existingUser) {
+    throw new AppError("User already exists", 409);
+  }
 
-    if (existingUser) {
-        throw new AppError(
-            "User already exists",
-            409
-        );
-    }
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-    const hashedPassword =
-    await bcrypt.hash(password, 10);
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+  });
 
-    const user =
-    await User.create({
-        name,
-        email,
-        password: hashedPassword,
-    });
+  return {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt,
+  };
 
-    return {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt,
-    };
-
-    logger.info(
-        "Email is available"
-    );
+  logger.info("Email is available");
 };
 
 const loginUser = async (loginData) => {
+  const { email, password } = loginData;
 
-    const { email, password } = loginData;
+  // Step 1: Find the user
+  const user = await User.findOne({ email });
 
-    // Step 1: Find the user
-    const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
 
-    if (!user) {
+  // Step 2: Compare passwords
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-        throw new AppError(
-            "User not found",
-            404
-        );
+  if (!isPasswordCorrect) {
+    throw new AppError("Invalid email or password", 401);
+  }
 
-    }
+  // Step 3: Return user
+  // Generate Access Token
+  const accessToken = generateAccessToken({
+    id: user._id,
 
-    // Step 2: Compare passwords
-    const isPasswordCorrect =
-        await bcrypt.compare(
-            password,
-            user.password
-        );
+    email: user.email,
 
-    if (!isPasswordCorrect) {
+    role: user.role,
+  });
 
-        throw new AppError(
-            "Invalid email or password",
-            401
-        );
+  // Generate Refresh Token
+  const refreshToken = generateRefreshToken({
+    id: user._id,
+  });
 
-    }
+  // Store Refresh Token in MongoDB
+  await RefreshToken.create({
+    user: user._id,
 
-    // Step 3: Return user
-    // Generate Access Token
-    const accessToken =
-        generateAccessToken({
+    token: refreshToken,
 
-            id: user._id,
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  });
 
-            email: user.email,
+  // Return Login Response
+  return {
+    user: {
+      id: user._id,
 
-            role: user.role,
+      name: user.name,
 
-        });
+      email: user.email,
 
-    // Generate Refresh Token
-    const refreshToken =
-        generateRefreshToken({
+      role: user.role,
+    },
 
-            id: user._id,
+    accessToken,
 
-        });
-
-    // Return Login Response
-    return {
-
-        user: {
-
-            id: user._id,
-
-            name: user.name,
-
-            email: user.email,
-
-            role: user.role,
-
-        },
-
-        accessToken,
-
-        refreshToken,
-
-    };
-
+    refreshToken,
+  };
 };
 
 const refreshAccessToken = async (refreshToken) => {
+  if (!refreshToken) {
+    throw new AppError(
+      "Refresh token missing",
 
-    if (!refreshToken) {
-
-        throw new AppError(
-
-            "Refresh token missing",
-
-            401
-
-        );
-
-    }
-
-    // Verify Refresh Token
-    const decoded = jwt.verify(
-
-        refreshToken,
-
-        process.env.REFRESH_TOKEN_SECRET
-
+      401,
     );
+  }
 
-    // Load latest user
-    const user = await User.findById(decoded.id);
+  // Verify Refresh Token
+  const decoded = jwt.verify(
+    refreshToken,
 
-    if (!user) {
+    process.env.REFRESH_TOKEN_SECRET,
+  );
 
-        throw new AppError(
+  // Check if Refresh Token exists in MongoDB
+  const storedToken = await RefreshToken.findOne({
+    token: refreshToken,
+  });
 
-            "User no longer exists",
+  if (!storedToken) {
+    throw new AppError(
+      "Refresh token is no longer valid",
 
-            401
+      401,
+    );
+  }
 
-        );
+  // Load latest user
+  const user = await User.findById(decoded.id);
 
-    }
+  if (!user) {
+    throw new AppError(
+      "User no longer exists",
 
-    // Generate new Access Token
-    const accessToken = generateAccessToken({
+      401,
+    );
+  }
 
-        id: user._id,
+  // Generate new Access Token
+  const accessToken = generateAccessToken({
+    id: user._id,
 
-        email: user.email,
+    email: user.email,
 
-        role: user.role,
+    role: user.role,
+  });
 
-    });
-
-    return accessToken;
-
+  return accessToken;
 };
 
 module.exports = {
-
-    registerUser,
-    loginUser,
-    refreshAccessToken
+  registerUser,
+  loginUser,
+  refreshAccessToken,
 };
