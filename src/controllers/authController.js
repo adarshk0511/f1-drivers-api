@@ -58,10 +58,30 @@ const loginUser = async (req, res) => {
 
 };
 
+const refreshToken = async (req, res) => {
+
+    const accessToken =
+
+        await authService.refreshAccessToken(
+
+            req.cookies.refreshToken
+
+        );
+
+    res.status(200).json({
+
+        success: true,
+
+        accessToken,
+
+    });
+
+};
+
 module.exports = {
 
     registerUser,
-    loginUser
-
+    loginUser,
+    refreshToken
 
 };

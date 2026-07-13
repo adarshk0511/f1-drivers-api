@@ -3,6 +3,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const AppError =
 require("../utils/AppError");
+const jwt = require("jsonwebtoken");
 const {
     generateAccessToken,
     generateRefreshToken,
@@ -129,8 +130,62 @@ const loginUser = async (loginData) => {
 
 };
 
+const refreshAccessToken = async (refreshToken) => {
+
+    if (!refreshToken) {
+
+        throw new AppError(
+
+            "Refresh token missing",
+
+            401
+
+        );
+
+    }
+
+    // Verify Refresh Token
+    const decoded = jwt.verify(
+
+        refreshToken,
+
+        process.env.REFRESH_TOKEN_SECRET
+
+    );
+
+    // Load latest user
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+
+        throw new AppError(
+
+            "User no longer exists",
+
+            401
+
+        );
+
+    }
+
+    // Generate new Access Token
+    const accessToken = generateAccessToken({
+
+        id: user._id,
+
+        email: user.email,
+
+        role: user.role,
+
+    });
+
+    return accessToken;
+
+};
+
 module.exports = {
 
     registerUser,
-    loginUser
+    loginUser,
+    refreshAccessToken
 };
