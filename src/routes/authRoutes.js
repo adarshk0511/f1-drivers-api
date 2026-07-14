@@ -9,7 +9,8 @@ require("../middleware/rateLimiter");
 const {
     registerUser,
         loginUser,
-        refreshToken
+        refreshToken,
+        logoutUser
 
 } = require(
     "../controllers/authController"
@@ -30,6 +31,11 @@ router.post(
 router.post(
     "/refresh",
     refreshToken
+);
+
+router.post(
+    "/logout",
+    logoutUser
 );
 
 module.exports = router;

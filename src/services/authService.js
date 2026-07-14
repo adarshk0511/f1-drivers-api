@@ -170,8 +170,21 @@ const refreshAccessToken = async (refreshToken) => {
   };
 };
 
+const logoutUser = async (refreshToken) => {
+
+    if (!refreshToken) {
+        return;
+    }
+
+    await RefreshToken.deleteOne({
+        token: refreshToken,
+    });
+
+};
+
 module.exports = {
   registerUser,
   loginUser,
   refreshAccessToken,
+  logoutUser,
 };

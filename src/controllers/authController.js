@@ -72,8 +72,34 @@ const refreshToken = async (req, res) => {
     });
 };
 
+const logoutUser = async (req, res) => {
+
+    await authService.logoutUser(
+        req.cookies.refreshToken
+    );
+
+    res.clearCookie(
+        "refreshToken",
+        {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+        }
+    );
+
+    res.status(200).json({
+
+        success: true,
+
+        message: "Logged out successfully",
+
+    });
+
+};
+
 module.exports = {
   registerUser,
   loginUser,
   refreshToken,
+  logoutUser, 
 };
