@@ -8,6 +8,8 @@ const cacheService =
     require("../services/cacheService");
 const generateCacheKey =
     require("../utils/cacheKey");
+const logger = require("../config/logger");
+
 const createDriver = async (req, res, next) => {
   try {
     const driver = await driverService.createDriver(req.body);
@@ -182,7 +184,16 @@ const getDrivers1 = async (
     next
 ) => {
 
-    const CACHE_KEY = "drivers:all";
+    const CACHE_KEY =
+    generateCacheKey(
+        "drivers",
+        req.query
+    );
+
+    logger.info({
+    cacheKey: CACHE_KEY
+}, "Generated Cache Key");
+
     const cachedDrivers =
     await cacheService.get(
         CACHE_KEY
