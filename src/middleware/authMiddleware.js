@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const AppError = require("../utils/AppError");
 const User = require("../models/User");
-8;
+const logger = require("../config/logger");
+
 
 const authenticate = async (req, res, next) => {
   try {
@@ -20,8 +21,10 @@ const authenticate = async (req, res, next) => {
     // Step 3: Extract Token
     const token = authHeader.split(" ")[1];
 
+    logger.info(`Token extracted: ${token}`);
+
     // Verify JWT
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
     // Load latest user from database
     const user = await User.findById(decoded.id).select("-password");

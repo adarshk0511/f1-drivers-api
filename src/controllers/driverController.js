@@ -4,6 +4,8 @@ const redisClient =
     require("../config/redis");
 const AppError =
 require("../utils/AppError");
+const cacheService =
+    require("../services/cacheService");
 
 const createDriver = async (req, res, next) => {
   try {
@@ -168,6 +170,25 @@ const getDrivers1 = async (
     next
 ) => {
 
+    const CACHE_KEY = "drivers:all";
+    const cachedDrivers =
+    await cacheService.get(
+        CACHE_KEY
+    );
+
+    if (cachedDrivers) {
+
+    return res.status(200).json({
+
+            success: true,
+
+            source: "redis",
+
+            data: JSON.parse(cachedDrivers),
+
+        });
+
+    }
     try {
 
         const {
@@ -192,6 +213,10 @@ const getDrivers1 = async (
                 sort,
                 order
             );
+
+        await cacheService.set(
+            CACHE_KEY, JSON.stringify(result), 60
+        );
 
         res.json(result);
 
