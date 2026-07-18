@@ -1,5 +1,6 @@
 const redisClient =
     require("../config/redis");
+const logger = require("../config/logger");
 
 const DEFAULT_EXPIRY = 60;
 
@@ -41,8 +42,35 @@ const del = async (key) => {
 
 };
 
+const delByPattern = async (pattern) => {
+
+    const keys = await redisClient.keys(pattern);
+
+    if (keys.length === 0) {
+        return;
+    }
+
+    logger.info(
+
+    {
+
+        pattern,
+
+        deletedKeys: keys,
+
+    },
+
+    "Invalidating Cache"
+
+);
+
+    await redisClient.del(keys);
+
+};
+
 module.exports = {
     get,
     set,
     del,
+    delByPattern
 };

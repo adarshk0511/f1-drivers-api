@@ -14,9 +14,10 @@ const createDriver = async (req, res, next) => {
   try {
     const driver = await driverService.createDriver(req.body);
 
-    await cacheService.del(
-    "drivers:all"
+    await cacheService.delByPattern(
+    "drivers*"
 );
+
     res.status(201).json(driver);
   } catch (error) {
     next(error);
@@ -126,8 +127,8 @@ const updateDriver = async (
 
         }
 
-        await cacheService.del(
-    "drivers:all"
+        await cacheService.delByPattern(
+    "drivers*"
 );
 
         res.json(updatedDriver);
@@ -161,8 +162,8 @@ const deleteDriver = async (
 
         }
 
-        await cacheService.del(
-    "drivers:all"
+        await cacheService.delByPattern(
+    "drivers*"
 );
 
         res.json({
