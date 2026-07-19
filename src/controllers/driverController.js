@@ -185,34 +185,34 @@ const getDrivers1 = async (
     next
 ) => {
 
-    const CACHE_KEY =
-    generateCacheKey(
-        "drivers",
-        req.query
-    );
+//     const CACHE_KEY =
+//     generateCacheKey(
+//         "drivers",
+//         req.query
+//     );
 
-    logger.info({
-    cacheKey: CACHE_KEY
-}, "Generated Cache Key");
+//     logger.info({
+//     cacheKey: CACHE_KEY
+// }, "Generated Cache Key");
 
-    const cachedDrivers =
-    await cacheService.get(
-        CACHE_KEY
-    );
+//     const cachedDrivers =
+//     await cacheService.get(
+//         CACHE_KEY
+//     );
 
-    if (cachedDrivers) {
+//     if (cachedDrivers) {
 
-    return res.status(200).json({
+//     return res.status(200).json({
 
-            success: true,
+//             success: true,
 
-            source: "redis",
+//             source: "redis",
 
-            data: JSON.parse(cachedDrivers),
+//             data: JSON.parse(cachedDrivers),
 
-        });
+//         });
 
-    }
+//     }
     try {
 
         const {

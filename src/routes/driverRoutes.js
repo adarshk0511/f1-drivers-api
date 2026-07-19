@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authenticate =
     require("../middleware/authMiddleware");
-
+const cacheMiddleware = require("../middleware/cacheMiddleware");
 const {
   createDriver,
   getDrivers,
@@ -34,7 +34,7 @@ const apiKey = require("../middleware/apiKey");
  *       500:
  *         description: Internal Server Error.
  */
-router.get("/", apiKey, authenticate, getDrivers1);
+router.get("/", apiKey, authenticate, cacheMiddleware("drivers"), getDrivers1);
 router.post("/", validateDriver, createDriver);
 
 router.get("/search/:keyword", searchDrivers);
