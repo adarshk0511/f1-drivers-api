@@ -34,6 +34,18 @@ const driverSchema = new mongoose.Schema({
     timestamps: true
 });
 
+driverSchema.index({
+    team: 1
+});
+
+driverSchema.index({
+    name: 1
+});
+
+driverSchema.index({
+    championships: -1
+});
+
 module.exports = mongoose.model(
     "Driver",
     driverSchema
