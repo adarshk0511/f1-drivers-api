@@ -20,7 +20,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const cookieParser =
     require("cookie-parser");
-
+const compression = require("compression");
 const app = express();
 
 // Security headers
@@ -33,6 +33,9 @@ app.use(
         credentials: true,
     })
 );
+
+// Compression
+app.use(compression());
 
 // Parse JSON
 app.use(express.json());

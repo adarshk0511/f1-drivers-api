@@ -185,11 +185,11 @@ const getDrivers1 = async (
     next
 ) => {
 
-//     const CACHE_KEY =
-//     generateCacheKey(
-//         "drivers",
-//         req.query
-//     );
+    const CACHE_KEY =
+    generateCacheKey(
+        "drivers",
+        req.query
+    );
 
 //     logger.info({
 //     cacheKey: CACHE_KEY
