@@ -348,6 +348,42 @@ const getTeamStats = async (
 
 };
 
+const getDriversByTeamStats = async (req, res, next) => {
+    try {
+
+        const stats = await Driver.aggregate([
+            {
+                $group: {
+                    _id: "$team",
+                    totalDrivers: {
+                        $sum: 1
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    team: "$_id",
+                    totalDrivers: 1
+                }
+            },
+            {
+                $sort: {
+                    totalDrivers: -1
+                }
+            }
+        ]);
+
+        res.json({
+            success: true,
+            data: stats
+        });
+
+    } catch (err) {
+        next(err);
+    }
+};
+
 module.exports = {
   createDriver,
   getDrivers,
@@ -359,5 +395,6 @@ module.exports = {
   getDrivers1,
   getDriverGrid,
   getDriverStats,
-  getTeamStats
+  getTeamStats,
+  getDriversByTeamStats
 };
