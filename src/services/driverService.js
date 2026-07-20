@@ -127,13 +127,13 @@ const getAllDrivers1 = async (
         filter.$or = [
             {
                 fullName: {
-                    $regex: search,
+                    $search: search,
                     $options: "i"
                 }
             },
             {
                 abbreviation: {
-                    $regex: search,
+                    $search: search,
                     $options: "i"
                 }
             }

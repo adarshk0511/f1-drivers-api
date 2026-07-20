@@ -51,6 +51,10 @@ driverSchema.index({
     championships: -1
 });
 
+driverSchema.index({
+    name: "text"
+});
+
 module.exports = mongoose.model(
     "Driver",
     driverSchema
