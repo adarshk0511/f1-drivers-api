@@ -384,6 +384,45 @@ const getDriversByTeamStats = async (req, res, next) => {
     }
 };
 
+const getDriversV2 = async (req, res, next) => {
+
+    try {
+
+        const drivers =
+            await driverService.getAllDrivers1(req.query);
+
+        const response =
+            drivers.map(driver => ({
+
+                driverId: driver._id,
+
+                fullName: driver.name,
+
+                team: driver.team,
+
+                championships:
+                    driver.championships
+
+            }));
+
+        res.json({
+
+            success: true,
+
+            data: response
+
+        });
+
+    }
+
+    catch(err){
+
+        next(err);
+
+    }
+
+};
+
 module.exports = {
   createDriver,
   getDrivers,
@@ -396,5 +435,6 @@ module.exports = {
   getDriverGrid,
   getDriverStats,
   getTeamStats,
-  getDriversByTeamStats
+  getDriversByTeamStats,
+  getDriversV2
 };
