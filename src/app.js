@@ -21,6 +21,7 @@ const cors = require("cors");
 const cookieParser =
     require("cookie-parser");
 const compression = require("compression");
+const apiV1Routes = require("./routes");
 const app = express();
 
 // Security headers
@@ -55,13 +56,13 @@ app.use(requestId);
 
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use("/api/auth", authRoutes);
 
-app.use("/api/drivers", driverRoutes);
-app.use("/api/teams", driverRoutes);
-
-app.use("/api/import-race", importRoutes);
-app.use("/api/jobs", jobRoutes);
+app.use("/api/v1", apiV1Routes);
+//app.use("/api/auth", authRoutes);
+//app.use("/api/drivers", driverRoutes);
+//app.use("/api/teams", driverRoutes);
+//app.use("/api/import-race", importRoutes);
+//app.use("/api/jobs", jobRoutes);
 
 app.use("/metrics", metricsRoutes);
 

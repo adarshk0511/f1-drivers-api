@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const authenticate =
-    require("../middleware/authMiddleware");
-const cacheMiddleware = require("../middleware/cacheMiddleware");
+    require("../../middleware/authMiddleware");
+const cacheMiddleware = require("../../middleware/cacheMiddleware");
 const {
   createDriver,
   getDrivers,
@@ -14,11 +14,12 @@ const {
   getDrivers1,
   getDriverGrid,
   getDriverStats,
-  getTeamStats
-} = require("../controllers/driverController");
+  getTeamStats,
+  getDriversByTeamStats
+} = require("../../controllers/driverController");
 
-const validateDriver = require("../middleware/validateDriver");
-const apiKey = require("../middleware/apiKey");
+const validateDriver = require("../../middleware/validateDriver");
+const apiKey = require("../../middleware/apiKey");
 
 /**
  * @swagger
@@ -52,6 +53,11 @@ router.get(
 router.get(
     "/team-stats",
     getTeamStats
+);
+router.get(
+    "/stats/team",
+    authenticate,
+    getDriversByTeamStats
 );
 
 router.get("/:abbr", getDriverByAbbreviation);
