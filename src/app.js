@@ -22,6 +22,7 @@ const cookieParser =
     require("cookie-parser");
 const compression = require("compression");
 const apiRoutes = require("./routes");
+const healthRoutes = require("./routes/healthRoutes");
 const app = express();
 
 // Security headers
@@ -56,6 +57,7 @@ app.use(requestId);
 
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+app.use("/health", healthRoutes);
 
 app.use("/api/v1", apiRoutes);
 //app.use("/api/auth", authRoutes);
