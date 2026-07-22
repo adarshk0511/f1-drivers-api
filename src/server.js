@@ -5,11 +5,11 @@ const logger = require("./config/logger"); // if you're using Pino
 const {
     initializeQueues,
 } = require("./config/queueManager");
-
+const config = require("./config");
 const mongoose = require("mongoose");
 const app = require("./app");
 
-const PORT = process.env.PORT || 5000;
+const PORT = config.port || 5000;
 
 async function startServer() {
     try {
