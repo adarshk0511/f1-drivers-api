@@ -23,6 +23,8 @@ const cookieParser =
 const compression = require("compression");
 const apiRoutes = require("./routes");
 const healthRoutes = require("./routes/healthRoutes");
+const requestTimeout =
+    require("./middleware/requestTimeout");
 const app = express();
 
 // Security headers
@@ -59,6 +61,7 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/health", healthRoutes);
 
+app.use(requestTimeout(10000));
 app.use("/api/v1", apiRoutes);
 //app.use("/api/auth", authRoutes);
 //app.use("/api/drivers", driverRoutes);

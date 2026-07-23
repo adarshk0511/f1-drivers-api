@@ -20,4 +20,18 @@ router.get(
     }
 );
 
+router.get("/delay", async (req, res) => {
+
+    await new Promise(resolve =>
+        setTimeout(resolve, 15000)
+    );
+
+    res.json({
+
+        success: true
+
+    });
+
+});
+
 module.exports = router;
