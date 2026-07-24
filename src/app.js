@@ -25,6 +25,8 @@ const apiRoutes = require("./routes");
 const healthRoutes = require("./routes/healthRoutes");
 const requestTimeout =
     require("./middleware/requestTimeout");
+const instanceInfo =
+require("./middleware/instanceInfo");
 const app = express();
 
 // Security headers
@@ -48,6 +50,7 @@ app.use(cookieParser());
 
 // Logging
 app.use(logger);
+app.use(instanceInfo);
 
 // (async () => {
 //   await redisClient.connect();

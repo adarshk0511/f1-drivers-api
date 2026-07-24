@@ -21,7 +21,10 @@ const config = {
 
         port: Number(process.env.REDIS_PORT)
 
-    }
+    },
+
+    instanceName:
+    process.env.INSTANCE_NAME || "local"
 
 };
 

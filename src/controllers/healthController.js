@@ -1,12 +1,21 @@
+const config = require("../config");
+const logger = require("../config/logger");
 const getHealth = (req, res) => {
 
-    res.status(200).json({
+    logger.info(
+        `Health check requested from instance: ${config.instanceName}`
+    );
+res.json({
 
-        status: "UP",
+    status:"UP",
 
-        timestamp: new Date().toISOString()
+    instance:
+        config.instanceName,
 
-    });
+    timestamp:
+        new Date().toISOString()
+
+});
 
 };
 
