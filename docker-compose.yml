@@ -1,27 +1,90 @@
 services:
 
-  api:
+  # api:
+  #   init: true
+
+  #   build: .
+
+  #   profiles:
+  #     - dev
+  #     - monitoring
+  #     - workers
+
+  #   ports:
+  #     - "5000:5000"
+
+  #   env_file:
+  #   - .env
+
+  #   environment:
+  #     PORT: 5000
+  #     MONGO_URI: mongodb://mongo:27017/f1drivers
+
+  #   depends_on:
+  #     - mongo
+
+  api-1:
     init: true
 
     build: .
 
-    profiles:
-      - dev
-      - monitoring
-      - workers
-
     ports:
-      - "5000:5000"
+      - "5001:5000"
 
     env_file:
-    - .env
+      - .env
 
     environment:
       PORT: 5000
       MONGO_URI: mongodb://mongo:27017/f1drivers
+      INSTANCE_NAME: api-1
+
+    depends_on:
+    - mongo
+    - redis
+
+
+  api-2:
+    init: true
+
+    build: .
+
+    ports:
+      - "5002:5000"
+
+    env_file:
+      - .env
+
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/f1drivers
+      INSTANCE_NAME: api-2
+
+    depends_on:
+    - mongo
+    - redis
+
+  api-3:
+    init: true
+
+    build: .
+
+    ports:
+      - "5003:5000"
+
+    env_file:
+      - .env
+
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/f1drivers
+      INSTANCE_NAME: api-3
 
     depends_on:
       - mongo
+      - redis
+
+ 
 
   mongo:
 
