@@ -1,0 +1,5 @@
+172.19.0.1 - - [27/Jul/2026:14:59:02 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.6:5000 ResponseTime=0.019
+172.19.0.1 - - [27/Jul/2026:14:59:06 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.4:5000 ResponseTime=0.019
+172.19.0.1 - - [27/Jul/2026:14:59:07 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.5:5000 ResponseTime=0.016
+172.19.0.1 - - [27/Jul/2026:14:59:08 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.6:5000 ResponseTime=0.002
+172.19.0.1 - - [27/Jul/2026:14:59:08 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.4:5000 ResponseTime=0.002
