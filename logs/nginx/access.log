@@ -3,3 +3,33 @@
 172.19.0.1 - - [27/Jul/2026:14:59:07 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.5:5000 ResponseTime=0.016
 172.19.0.1 - - [27/Jul/2026:14:59:08 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.6:5000 ResponseTime=0.002
 172.19.0.1 - - [27/Jul/2026:14:59:08 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.4:5000 ResponseTime=0.002
+172.20.0.1 - - [28/Jul/2026:14:01:01 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 ResponseTime=0.072
+172.20.0.1 - - [28/Jul/2026:14:01:01 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.6:5000 ResponseTime=0.017
+172.20.0.1 - - [28/Jul/2026:14:01:01 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 ResponseTime=0.007
+172.20.0.1 - - [28/Jul/2026:14:01:01 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.5:5000 ResponseTime=0.025
+172.20.0.1 - - [28/Jul/2026:14:01:01 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 ResponseTime=0.004
+172.20.0.1 - - [28/Jul/2026:14:01:01 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.6:5000 ResponseTime=0.003
+172.20.0.1 - - [28/Jul/2026:14:01:01 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 ResponseTime=0.002
+172.20.0.1 - - [28/Jul/2026:14:01:01 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.6:5000 ResponseTime=0.005
+172.20.0.1 - - [28/Jul/2026:14:01:02 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 ResponseTime=0.002
+172.20.0.1 - - [28/Jul/2026:14:01:02 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 ResponseTime=0.002
+172.20.0.1 - - [28/Jul/2026:14:17:34 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 Instance=- ResponseTime=0.087
+172.20.0.1 - - [28/Jul/2026:14:17:34 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.6:5000 Instance=- ResponseTime=0.039
+172.20.0.1 - - [28/Jul/2026:14:17:34 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 Instance=- ResponseTime=0.001
+172.20.0.1 - - [28/Jul/2026:14:17:34 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.5:5000 Instance=- ResponseTime=0.051
+172.20.0.1 - - [28/Jul/2026:14:17:34 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 Instance=- ResponseTime=0.003
+172.20.0.1 - - [28/Jul/2026:14:17:34 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.6:5000 Instance=- ResponseTime=0.001
+172.20.0.1 - - [28/Jul/2026:14:17:34 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 Instance=- ResponseTime=0.002
+172.20.0.1 - - [28/Jul/2026:14:17:34 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.6:5000 Instance=- ResponseTime=0.002
+172.20.0.1 - - [28/Jul/2026:14:17:35 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 Instance=- ResponseTime=0.001
+172.20.0.1 - - [28/Jul/2026:14:17:35 +0000] "GET /health HTTP/1.1" 200 Backend=172.20.0.4:5000 Instance=- ResponseTime=0.001
+172.19.0.1 - - [28/Jul/2026:14:20:45 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.5:5000 Instance=api-1 ResponseTime=0.018
+172.19.0.1 - - [28/Jul/2026:14:20:45 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.4:5000 Instance=api-2 ResponseTime=0.014
+172.19.0.1 - - [28/Jul/2026:14:20:45 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.5:5000 Instance=api-1 ResponseTime=0.004
+172.19.0.1 - - [28/Jul/2026:14:20:45 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.6:5000 Instance=api-3 ResponseTime=0.014
+172.19.0.1 - - [28/Jul/2026:14:20:45 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.5:5000 Instance=api-1 ResponseTime=0.002
+172.19.0.1 - - [28/Jul/2026:14:20:45 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.4:5000 Instance=api-2 ResponseTime=0.002
+172.19.0.1 - - [28/Jul/2026:14:20:45 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.5:5000 Instance=api-1 ResponseTime=0.003
+172.19.0.1 - - [28/Jul/2026:14:20:45 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.4:5000 Instance=api-2 ResponseTime=0.001
+172.19.0.1 - - [28/Jul/2026:14:20:45 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.5:5000 Instance=api-1 ResponseTime=0.002
+172.19.0.1 - - [28/Jul/2026:14:20:46 +0000] "GET /health HTTP/1.1" 200 Backend=172.19.0.5:5000 Instance=api-1 ResponseTime=0.002

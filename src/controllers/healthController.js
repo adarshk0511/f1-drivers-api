@@ -5,6 +5,9 @@ const getHealth = (req, res) => {
     logger.info(
         `Health check requested from instance: ${config.instanceName}`
     );
+
+    res.setHeader("X-Instance", config.instanceName);
+    
 res.json({
 
     status:"UP",
