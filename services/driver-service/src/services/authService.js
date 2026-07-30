@@ -1,5 +1,5 @@
 const logger = require("../config/logger");
-const User = require("../models/User");
+//const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const AppError = require("../utils/AppError");
 const jwt = require("jsonwebtoken");

@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  driver-service:
+    build: .
+    container_name: driver-service
+
+    ports:
+      - "5001:5000"
+
+    depends_on:
+      - mongo
+      - redis
+
+    env_file:
+      - .env
+
+  mongo:
+    image: mongo:7
+    container_name: driver-mongo
+
+    ports:
+      - "27018:27017"
+
+    volumes:
+      - driver-mongo-data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    container_name: driver-redis
+
+    ports:
+      - "6380:6379"
+
+volumes:
+  driver-mongo-data:
